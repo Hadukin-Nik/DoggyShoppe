@@ -4,15 +4,29 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private float _speed;
+
+    private Rigidbody _rigidbody;
+
+    private void Start()
     {
-        
+        _rigidbody = gameObject.GetComponent<Rigidbody>();   
     }
 
-    // Update is called once per frame
+
     void Update()
     {
-        
+        float horizontal = Input.GetAxis("Horizontal");
+        float vertical = Input.GetAxis("Vertical");
+
+        Vector3 direction = new Vector3(horizontal * _speed * Time.deltaTime, 0, vertical * _speed * Time.deltaTime);
+
+        if(Input.GetKey(KeyCode.Space) && transform.position.y <= 0.501) 
+        {
+            _rigidbody.AddForce(Vector3.up);
+        }
+
+        transform.Translate(direction);
+    
     }
 }
