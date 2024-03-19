@@ -407,7 +407,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _raycastField: 10
-  _objectSize: 2
+  _raycastDistanceOffset: 2.5
 --- !u!43 &394408301
 Mesh:
   m_ObjectHideFlags: 0

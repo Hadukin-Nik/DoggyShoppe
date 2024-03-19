@@ -1,0 +1,111 @@
+using System;
+using UnityEditor;
+using UnityEngine;
+
+[CustomEditor(typeof(ItemFactory))]
+public class ListItemInspector : Editor
+{
+    private enum displayFieldType { DisplayAsAutomaticFields, DisplayAsCustomizableGUIFields }
+    //private displayFieldType _displayFieldType;
+
+    private ItemFactory _classHolder;
+    private SerializedObject _targetObject;
+    private SerializedProperty _list;
+    private int _listSize;
+
+    void OnEnable()
+    {
+        _classHolder = (ItemFactory)target;
+        _targetObject = new SerializedObject(_classHolder);
+        _list = _targetObject.FindProperty("items"); // Find the List in our script and create a refrence of it
+    }
+
+    public override void OnInspectorGUI()
+    {
+        //Update our list
+        _targetObject.Update();
+
+        //Choose how to display the list<> Example purposes only
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+        //_displayFieldType = (displayFieldType)EditorGUILayout.EnumPopup("", _displayFieldType);
+
+        //Resize our list
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+        EditorGUILayout.LabelField("Define the list size with a number");
+        _listSize = _list.arraySize;
+        _listSize = EditorGUILayout.IntField("List Size", _listSize);
+
+        if (_listSize != _list.arraySize)
+        {
+            while (_listSize > _list.arraySize)
+            {
+                _list.InsertArrayElementAtIndex(_list.arraySize);
+            }
+            while (_listSize < _list.arraySize)
+            {
+                _list.DeleteArrayElementAtIndex(_list.arraySize - 1);
+            }
+        }
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        //Or add a new item to the List<> with a button
+        EditorGUILayout.LabelField("Add a new item with a button");
+
+        if (GUILayout.Button("Add New"))
+        {
+            _classHolder.Add(new Item());
+        }
+
+        EditorGUILayout.Space();
+        EditorGUILayout.Space();
+
+        //Display our list to the inspector window
+
+        for (int i = 0; i < _list.arraySize; i++)
+        {
+            SerializedProperty MyListRef = _list.GetArrayElementAtIndex(i);
+            SerializedProperty MyEnum = MyListRef.FindPropertyRelative("_itemIndificator");
+            SerializedProperty MyGameObject = MyListRef.FindPropertyRelative("_gameBody");
+            SerializedProperty MyName = MyListRef.FindPropertyRelative("_name");
+
+
+            // Display the property fields in two ways.
+
+            EditorGUILayout.LabelField("Automatic Field By Property Type");
+            EditorGUILayout.PropertyField(MyEnum);
+            EditorGUILayout.PropertyField(MyGameObject);
+            EditorGUILayout.PropertyField(MyName);
+
+            // Array fields with remove at index
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Array Fields");
+
+            if (GUILayout.Button("Add New Index", GUILayout.MaxWidth(130), GUILayout.MaxHeight(20)))
+            {
+                _list.InsertArrayElementAtIndex(_list.arraySize);
+                _list.GetArrayElementAtIndex(_list.arraySize - 1).intValue = 0;
+            }
+
+            EditorGUILayout.Space();
+
+            //Remove this index from the List
+            EditorGUILayout.LabelField("Remove an index from the List<> with a button");
+            if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))
+            {
+                _list.DeleteArrayElementAtIndex(i);
+            }
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+        }
+
+        //Apply the changes to our list
+        _targetObject.ApplyModifiedProperties();
+    }
+}

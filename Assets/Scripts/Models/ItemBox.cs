@@ -4,15 +4,25 @@ using UnityEngine;
 
 public class ItemBox : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private ItemsConsts.ItemIndificator itemIndificator;
+
+    [SerializeField] private int _countOfItems;
+
+    public int CountOfItems()
     {
-        
+        return _countOfItems;
     }
 
-    // Update is called once per frame
-    void Update()
+    public int grabItems(int itemCount)
     {
-        
+        if(itemCount < _countOfItems)
+        {
+            _countOfItems -= itemCount;
+        } else {
+            itemCount = _countOfItems;
+            _countOfItems = 0;
+        }
+
+        return itemCount;
     }
 }
