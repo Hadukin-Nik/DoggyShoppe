@@ -7,24 +7,15 @@ public class Door : MonoBehaviour
 {
     [SerializeField] private float _speed;
     [SerializeField] private float _rotateOn;
-    [SerializeField] private float _reloadTime;
 
     private float _rotated = 0;
-    private float _standingTime = -1;
+    private bool _onAnimation = false;
     private bool _IsMovingFwd = true;
     
 
-    void Update()
+    private void Update()
     {
-        if(_standingTime >= 0 && _standingTime < _reloadTime)
-        {
-            _standingTime += Time.deltaTime;
-            return;
-        } else if (_standingTime > 0)
-        {
-            _standingTime = -1;
-        }
-
+        if (!_onAnimation) return;
         _rotated += Time.deltaTime * _speed;
 
         if(_IsMovingFwd)
@@ -42,10 +33,13 @@ public class Door : MonoBehaviour
 
             if(_IsMovingFwd )
             {
-                _standingTime = 0.01f;
+                _onAnimation = false;
             }
         } 
+    }
 
-        
+    public void Open()
+    {
+        _onAnimation = true;
     }
 }
