@@ -83,15 +83,6 @@ public class ListItemInspector : Editor
             // Array fields with remove at index
             EditorGUILayout.Space();
             EditorGUILayout.Space();
-            EditorGUILayout.LabelField("Array Fields");
-
-            if (GUILayout.Button("Add New Index", GUILayout.MaxWidth(130), GUILayout.MaxHeight(20)))
-            {
-                _list.InsertArrayElementAtIndex(_list.arraySize);
-                _list.GetArrayElementAtIndex(_list.arraySize - 1).intValue = 0;
-            }
-
-            EditorGUILayout.Space();
 
             //Remove this index from the List
             EditorGUILayout.LabelField("Remove an index from the List<> with a button");
