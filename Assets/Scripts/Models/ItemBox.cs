@@ -13,16 +13,23 @@ public class ItemBox : MonoBehaviour
         return _countOfItems;
     }
 
-    public int grabItems(int itemCount)
+    public bool isAnyItemIn()
     {
-        if(itemCount < _countOfItems)
-        {
-            _countOfItems -= itemCount;
-        } else {
-            itemCount = _countOfItems;
-            _countOfItems = 0;
-        }
+        return _countOfItems >= 1;
+    }
 
-        return itemCount;
+    public bool tryDecreaseAmount()
+    {
+        return --_countOfItems >= 0 ? true : (++_countOfItems) > 0;
+    }
+
+    public bool tryIncreaseAmount()
+    {
+        return ++_countOfItems >= 0 ? true : true;
+    }
+
+    public ItemsConsts.ItemIndificator GetItemIndificator()
+    {
+        return itemIndificator;
     }
 }

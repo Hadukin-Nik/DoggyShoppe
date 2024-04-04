@@ -1,4 +1,5 @@
-using System;
+#if UNITY_EDITOR
+
 using UnityEditor;
 using UnityEngine;
 
@@ -71,6 +72,7 @@ public class ListItemInspector : Editor
             SerializedProperty MyEnum = MyListRef.FindPropertyRelative("_itemIndificator");
             SerializedProperty MyGameObject = MyListRef.FindPropertyRelative("_gameBody");
             SerializedProperty MyName = MyListRef.FindPropertyRelative("_name");
+            SerializedProperty MySize = MyListRef.FindPropertyRelative("_size");
 
 
             // Display the property fields in two ways.
@@ -79,13 +81,13 @@ public class ListItemInspector : Editor
             EditorGUILayout.PropertyField(MyEnum);
             EditorGUILayout.PropertyField(MyGameObject);
             EditorGUILayout.PropertyField(MyName);
+            EditorGUILayout.PropertyField(MySize);
+
 
             // Array fields with remove at index
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
-            //Remove this index from the List
-            EditorGUILayout.LabelField("Remove an index from the List<> with a button");
             if (GUILayout.Button("Remove This Index (" + i.ToString() + ")"))
             {
                 _list.DeleteArrayElementAtIndex(i);
@@ -100,3 +102,4 @@ public class ListItemInspector : Editor
         _targetObject.ApplyModifiedProperties();
     }
 }
+#endif

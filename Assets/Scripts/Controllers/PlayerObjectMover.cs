@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
+using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
-using static UnityEditor.Experimental.GraphView.GraphView;
-using UnityEngine.UI;
+
 
 public class PlayerObjectMover : MonoBehaviour
 {
@@ -15,8 +13,6 @@ public class PlayerObjectMover : MonoBehaviour
 
     private ItemBox _itemInHands;
     private Transform _itemInHandsBody;
-    private int _hitCounter = 0;
-    private RaycastHit _lastHit;
     private void Update()
     {
         if(_itemInHandsBody != null)
@@ -34,10 +30,18 @@ public class PlayerObjectMover : MonoBehaviour
         {
             _itemInHands = hit.transform.GetComponent<ItemBox>();
             _itemInHandsBody = hit.transform;
-        } else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position + fwd.normalized * _raycastDistanceOffset, fwd, out hit, _raycastField) && (_groundMask & (1 << hit.transform.gameObject.layer)) != 0)
+        }  else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position + fwd.normalized * _raycastDistanceOffset, fwd, out hit, _raycastField) && hit.transform.CompareTag("ItemHolder"))
+        {
+            ItemHolder board = hit.transform.GetComponent<ItemHolder>();
+
+            if(board.IsItemPlaceable(_itemInHands.GetItemIndificator()) && _itemInHands.tryDecreaseAmount())
+            {
+                board.AddNewItem(_itemInHands.GetItemIndificator());
+            }
+        }
+        else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position + fwd.normalized * _raycastDistanceOffset, fwd, out hit, _raycastField) && (_groundMask & (1 << hit.transform.gameObject.layer)) != 0)
         {
             _itemInHandsBody.position = hit.point;
-            _lastHit = hit;
             _itemInHands = null;
             _itemInHandsBody = null;
         }

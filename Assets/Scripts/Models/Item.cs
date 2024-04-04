@@ -2,10 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 [System.Serializable]
 public class Item {
     public ItemsConsts.ItemIndificator _itemIndificator;
     public GameObject _gameBody;
+    public Vector3 _size;
     public string _name;
 
     public Item() { }
