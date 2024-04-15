@@ -39,11 +39,13 @@ public class PlayerObjectMover : MonoBehaviour
                 board.AddNewItem(_itemInHands.GetItemIndificator());
             }
         }
-        else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position + fwd.normalized * _raycastDistanceOffset, fwd, out hit, _raycastField) && (_groundMask & (1 << hit.transform.gameObject.layer)) != 0)
+        else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask))
         {
             _itemInHandsBody.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
             _itemInHands = null;
             _itemInHandsBody = null;
         }
     }
+
+    
 }

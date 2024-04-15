@@ -2,12 +2,10 @@ using UnityEngine;
 
 public class BuildingContoller : MonoBehaviour
 {
-    [SerializeField] private Vector3 _point;
     [SerializeField] private Vector3 _size;
     
-    public BuildingContoller(Vector3 point, Vector3 size)
+    public BuildingContoller(Vector3 size)
     {
-        _point = point;
         _size = size;   
     }
 
@@ -15,6 +13,8 @@ public class BuildingContoller : MonoBehaviour
     {
         return _size;
     }
+
+    public void SetSize(Vector3 size) { _size = size; }
 
     public Transform GetTransform()
     {

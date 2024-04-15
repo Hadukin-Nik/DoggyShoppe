@@ -23,10 +23,10 @@ public class FloorController : MonoBehaviour
         _transformationMatrix = new float[2, 2];
         _transformedGlobalPivot = new float[2, 1];
 
-        Vector3 forward = transform.forward;
-        Vector3 right = transform.right;
+        Vector3 right = _pointStart.right;
+        Vector3 forward = _pointStart.forward;
 
-        float detA = (right.x * forward.z - right.z * forward.z);
+        float detA = (right.x * forward.z - right.z * forward.x);
 
         _transformationMatrix[0, 0] = forward.z / detA;
         _transformationMatrix[0, 1] = (-forward.x) / detA;
@@ -72,6 +72,8 @@ public class FloorController : MonoBehaviour
         {
             return true;
         }
+
+        
 
         foreach(Vector3 point in pointsOnMatrix)
         {

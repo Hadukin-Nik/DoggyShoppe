@@ -1,11 +1,10 @@
-using System.Collections; 
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ItemHolder : MonoBehaviour
 {
+    [SerializeField] private string _mainPointTag;
     [SerializeField] private Vector3 _size;
-    [SerializeField] private Transform _mainPoint;
     [SerializeField] private Transform _pivot;
 
     private ItemFactory _factory;
@@ -18,7 +17,8 @@ public class ItemHolder : MonoBehaviour
 
     private void Start()
     {
-        _factory = _mainPoint.GetComponent<ItemFactory>();
+        GameObject mainPoint = GameObject.FindWithTag(_mainPointTag);
+        _factory = mainPoint.GetComponent<ItemFactory>();
         _itemStack = new Stack<GameObject>();
 
         setPlaceEmpty();
@@ -30,10 +30,11 @@ public class ItemHolder : MonoBehaviour
         _maxCount = 0;
     }
 
+
     public bool IsItemPlaceable(ItemsConsts.ItemIndificator toPlace)
     {
         
-        bool e =  (_itemPrefab.getItemIndificator == toPlace || _itemPrefab.getItemIndificator == ItemsConsts.ItemIndificator.Empty) && (_maxCount == 0 || _maxCount > _itemStack.Count);
+        bool e =  (_itemPrefab._itemIndificator == toPlace || _itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) && (_maxCount == 0 || _maxCount > _itemStack.Count);
         return e;
     }
 
@@ -44,7 +45,7 @@ public class ItemHolder : MonoBehaviour
 
     public void AddNewItem(ItemsConsts.ItemIndificator toPlace)
     {
-        if(_itemPrefab.getItemIndificator == ItemsConsts.ItemIndificator.Empty)
+        if(_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty)
         {
             _itemPrefab = _factory.Get(toPlace);
             _maxCount = (int)(_size.x / _itemPrefab._size.x) * (int)(_size.z / _itemPrefab._size.z);
