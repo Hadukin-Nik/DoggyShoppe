@@ -5,9 +5,10 @@ public class BuildingContoller : MonoBehaviour
     [SerializeField] private Vector3 _point;
     [SerializeField] private Vector3 _size;
     
-    public Vector3 GetPoint()
+    public BuildingContoller(Vector3 point, Vector3 size)
     {
-        return _point;
+        _point = point;
+        _size = size;   
     }
 
     public Vector3 GetSize()
