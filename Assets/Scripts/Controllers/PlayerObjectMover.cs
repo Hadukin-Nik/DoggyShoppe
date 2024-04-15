@@ -41,7 +41,7 @@ public class PlayerObjectMover : MonoBehaviour
         }
         else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position + fwd.normalized * _raycastDistanceOffset, fwd, out hit, _raycastField) && (_groundMask & (1 << hit.transform.gameObject.layer)) != 0)
         {
-            _itemInHandsBody.position = hit.point;
+            _itemInHandsBody.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
             _itemInHands = null;
             _itemInHandsBody = null;
         }
