@@ -30,12 +30,12 @@ public class PlayerBuilder : MonoBehaviour
 
 
         Debug.DrawRay(_face.position + fwd * 1, fwd, Color.blue);
-
+        //Move
         if(_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask))
         {
-            buildingGO.transform.position = new Vector3(hit.point.x, hit.point.y + _building._size.y / 2, hit.point.z);
+            buildingGO.transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
         }
-
+        //Change
         if(_isBuilding && Input.GetKeyDown(KeyCode.RightBracket))
         {
             Debug.Log("RIGHT BRACKET");
@@ -78,23 +78,22 @@ public class PlayerBuilder : MonoBehaviour
             buildingGO.transform.position = position;
         }
 
+        //rotating
+        if (_isBuilding)
+        {
+
+            buildingGO.transform.Rotate(buildingGO.transform.up, _rotationSpeed * Time.deltaTime * Input.GetAxis("BuildingsRotate"));
+
+        }
+        //Open\Close\Create
         if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
             _building = _buildingsFactory.Get(BuildingIndificator.Desk1);
             buildingGO = Instantiate(_building._gameBody, transform.position, transform.rotation);
 
-            buildingGO.transform.SetPositionAndRotation(new Vector3(hit.point.x, hit.point.y + _buildingsFactory.Get(BuildingIndificator.Desk1)._size.y / 2, hit.point.z), transform.rotation);
+            buildingGO.transform.SetPositionAndRotation(new Vector3(hit.point.x, hit.point.y, hit.point.z), transform.rotation);
             _buildingIndificator = BuildingIndificator.Desk1;
             _isBuilding = true;
-        }  
-        else if (_isBuilding && Input.GetKeyDown(KeyCode.R)) {
-
-            buildingGO.transform.Rotate(buildingGO.transform.up, _rotationSpeed * Time.deltaTime);
-
-        } else if (_isBuilding && Input.GetKeyDown(KeyCode.T)) {
-
-            buildingGO.transform.Rotate(buildingGO.transform.up, -_rotationSpeed * Time.deltaTime);
-
-        }
+        }   
         else if (_isBuilding && Input.GetKeyDown(KeyCode.Q) 
             && _floorController.TryToBuild(buildingGO.GetComponent<BuildingContoller>())){
 

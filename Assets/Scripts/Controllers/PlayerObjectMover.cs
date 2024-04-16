@@ -30,7 +30,9 @@ public class PlayerObjectMover : MonoBehaviour
         {
             _itemInHands = hit.transform.GetComponent<ItemBox>();
             _itemInHandsBody = hit.transform;
-        }  else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position + fwd.normalized * _raycastDistanceOffset, fwd, out hit, _raycastField) && hit.transform.CompareTag("ItemHolder"))
+
+           hit.transform.GetComponent<BoxCollider>().enabled = false;
+        }  else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && hit.transform.CompareTag("ItemHolder"))
         {
             ItemHolder board = hit.transform.GetComponent<ItemHolder>();
 
@@ -42,6 +44,10 @@ public class PlayerObjectMover : MonoBehaviour
         else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask))
         {
             _itemInHandsBody.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
+
+            _itemInHandsBody.transform.GetComponent<BoxCollider>().enabled = true;
+
+            _itemInHands.transform.rotation = transform.rotation;
             _itemInHands = null;
             _itemInHandsBody = null;
         }

@@ -39,14 +39,15 @@ public class FloorController : MonoBehaviour
 
     private bool isItPossibleToBuild(Transform buildingTransform, Vector3 buildingSize, bool buildImmediately)
     {
+        float exp = 0.1f;
         List<Vector3> pointsOnMatrix = new List<Vector3>();
 
-        for(int i = 0; i < buildingSize.x / _delta; i++)
+        for(int i = 0; i < buildingSize.x / _delta / exp; i++)
         {
-            for(int j = 0; j < buildingSize.z / _delta; j++)
+            for(int j = 0; j < buildingSize.z / _delta / exp; j++)
             {
-                float deltaX = i * _delta;
-                float deltaZ = j * _delta;
+                float deltaX = i * _delta * exp;
+                float deltaZ = j * _delta * exp;
 
                 Vector3 nv = (deltaX) * buildingTransform.right + (deltaZ) * buildingTransform.forward;
 

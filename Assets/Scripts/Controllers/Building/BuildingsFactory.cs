@@ -21,8 +21,12 @@ public class BuildingsFactory : MonoBehaviour
         int index = getIndex(buildingIndificator);
         if (index != -1)
         {
-            buildings[index]._gameBody.AddComponent<BuildingContoller>();
             BuildingContoller bc = buildings[index]._gameBody.GetComponent<BuildingContoller>();
+
+            if (bc == null) {
+                buildings[index]._gameBody.AddComponent<BuildingContoller>();
+                bc = buildings[index]._gameBody.GetComponent<BuildingContoller>();
+            }
             bc.SetSize(buildings[index]._size);
             return buildings[index];
         }
