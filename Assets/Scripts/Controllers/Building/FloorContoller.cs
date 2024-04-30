@@ -81,9 +81,9 @@ public class FloorController : MonoBehaviour
     }
     private void buildObstacle(GameObject gameObject, int i, int j, float yd)
     {
-        Vector3 x = (j + 1) *_delta * _pointStart.forward;
-        Vector3 z = (i + 1) *_delta * _pointStart.right;
-        Vector3 y = _delta * 2 * _pointStart.up*yd;
+        Vector3 x = (j + 0.5f) *_delta * _pointStart.forward;
+        Vector3 z = (i + 0.5f) *_delta * _pointStart.right;
+        Vector3 y =  _pointStart.up*yd*0.5f;
         _stack.Push(Instantiate(gameObject, x + z + y + _pointStart.position, _pointStart.rotation));
     }
 
@@ -100,7 +100,7 @@ public class FloorController : MonoBehaviour
                 float deltaX = i * _delta * exp;
                 float deltaZ = j * _delta * exp;
 
-                Vector3 nv = (deltaX) * buildingTransform.right + (deltaZ) * buildingTransform.forward - buildingTransform.right * buildingSize.x / 2 - buildingTransform.forward * buildingSize.z/2;
+                Vector3 nv = (deltaX) * buildingTransform.right + (deltaZ) * buildingTransform.forward - buildingTransform.right * buildingSize.x / 2 - buildingTransform.forward * buildingSize.z / 2;
 
                 float xG = (nv.x + buildingTransform.position.x);
                 float zG = (nv.z + buildingTransform.position.z);

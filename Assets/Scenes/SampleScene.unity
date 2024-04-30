@@ -4102,37 +4102,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemIndificator: 0
   _countOfItems: 200
---- !u!1 &1060653614
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1060653615}
-  m_Layer: 0
-  m_Name: GameObject
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1060653615
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1060653614}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.57, y: 0, z: -10.66}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1083674481
 GameObject:
   m_ObjectHideFlags: 0
@@ -6304,7 +6273,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _pointStart: {fileID: 1293154641}
   _size: {x: 14.5, y: 0, z: 19}
-  _delta: 0.25
+  _delta: 0.5
+  _onCreate: 0
+  _green: {fileID: 5723541889750699613, guid: 85598f55208560e429908bf8c44f1251, type: 3}
+  _red: {fileID: 1551663891582929958, guid: a72b568e61837c1418f24d2b4741fc02, type: 3}
 --- !u!1 &1834261884
 GameObject:
   m_ObjectHideFlags: 0
@@ -7502,4 +7474,3 @@ SceneRoots:
   - {fileID: 738249091}
   - {fileID: 1275457822}
   - {fileID: 723839783}
-  - {fileID: 1060653615}
