@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,9 +14,17 @@ public class FloorController : MonoBehaviour
     private float[,] _transformedGlobalPivot;
 
     private bool[,] _buildingMatrix;
+ 
 
+    private Stack<GameObject> _stack;
+
+    [SerializeField] private bool _onCreate;
+    [SerializeField] private GameObject _green;
+    [SerializeField] private GameObject _red;
     private void Start()
     {
+        _stack = new Stack<GameObject>();
+
         //False means - no building on that point
         Vector3 pointStart = _pointStart.position;
         _buildingMatrix = new bool[Mathf.Abs((int)(_size.x / _delta)),Mathf.Abs((int)(_size.z / _delta))];
@@ -37,6 +46,48 @@ public class FloorController : MonoBehaviour
         _transformedGlobalPivot[1, 0] = -(_transformationMatrix[1, 0] * pointStart.x + _transformationMatrix[1, 1] * pointStart.z);
     }
 
+    public void CreateBuildingMap()
+    {
+        while (_stack.Count > 0)
+        {
+            GameObject gb = _stack.Pop();
+            Destroy(gb);
+        }
+        for (int i = 0; i < Mathf.Abs((int)(_size.x / _delta)); i++)
+        {
+            for (int j = 0; j < Mathf.Abs((int)(_size.z / _delta)); j++)
+            {
+                if (!_buildingMatrix[i, j])
+                {
+                    buildObstacle(_green, i, j, 1);
+                }
+                else
+                {
+                    buildObstacle(_red, i, j, 1.1f);
+                }
+            }
+        }
+
+        _onCreate = false;
+    }
+
+    public void DestroyBuildingMap()
+    {
+        while (_stack.Count > 0)
+        {
+            GameObject gb = _stack.Pop();
+            Destroy(gb);
+        }
+    }
+    private void buildObstacle(GameObject gameObject, int i, int j, float yd)
+    {
+        Vector3 x = (j + 1) *_delta * _pointStart.forward;
+        Vector3 z = (i + 1) *_delta * _pointStart.right;
+        Vector3 y = _delta * 2 * _pointStart.up*yd;
+        _stack.Push(Instantiate(gameObject, x + z + y + _pointStart.position, _pointStart.rotation));
+    }
+
+
     private bool isItPossibleToBuild(Transform buildingTransform, Vector3 buildingSize, bool buildImmediately)
     {
         float exp = 0.1f;
@@ -49,7 +100,7 @@ public class FloorController : MonoBehaviour
                 float deltaX = i * _delta * exp;
                 float deltaZ = j * _delta * exp;
 
-                Vector3 nv = (deltaX) * buildingTransform.right + (deltaZ) * buildingTransform.forward;
+                Vector3 nv = (deltaX) * buildingTransform.right + (deltaZ) * buildingTransform.forward - buildingTransform.right * buildingSize.x / 2 - buildingTransform.forward * buildingSize.z/2;
 
                 float xG = (nv.x + buildingTransform.position.x);
                 float zG = (nv.z + buildingTransform.position.z);
@@ -83,6 +134,7 @@ public class FloorController : MonoBehaviour
 
         return true;
     }
+    
 
     public bool IsItPossibleToBuild(BuildingContoller buildingContoller)
     {

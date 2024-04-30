@@ -4,7 +4,7 @@ using UnityEngine;
 [System.Serializable]
 public class Item : PlaceableObject {
     public ItemsConsts.ItemIndificator _itemIndificator;
-
+    
     public Item() { }
 
     public Item(ItemsConsts.ItemIndificator itemIndificator, GameObject gameBody, string name)

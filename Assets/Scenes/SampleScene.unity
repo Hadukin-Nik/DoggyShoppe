@@ -573,7 +573,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   _raycastField: 3
-  _raycastDistanceOffset: 2.5
+  _raycastDistanceOffset: 3.5
 --- !u!114 &379620580
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -983,11 +983,11 @@ MonoBehaviour:
     _name: 
     _itemIndificator: 5
   - _gameBody: {fileID: 880242898202982715, guid: ac5c662a4439adc449aae7db4de776e1, type: 3}
-    _size: {x: 0.2, y: 0, z: 0.2}
+    _size: {x: 0.25, y: 0.85, z: 0.25}
     _name: Bone
     _itemIndificator: 0
   - _gameBody: {fileID: 7271730919297042516, guid: ea2938e9594e8ca4ab33a85c1fa5c771, type: 3}
-    _size: {x: 1, y: 0, z: 1}
+    _size: {x: 1, y: 0.05, z: 1}
     _name: Meat
     _itemIndificator: 1
 --- !u!4 &738249091

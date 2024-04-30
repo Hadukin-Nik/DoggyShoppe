@@ -81,12 +81,13 @@ public class PlayerBuilder : MonoBehaviour
         //rotating
         if (_isBuilding)
         {
-
+           
             buildingGO.transform.Rotate(buildingGO.transform.up, _rotationSpeed * Time.deltaTime * Input.GetAxis("BuildingsRotate"));
 
         }
         //Open\Close\Create
         if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
+            _floorController.CreateBuildingMap();
             _building = _buildingsFactory.Get(BuildingIndificator.Desk1);
             buildingGO = Instantiate(_building._gameBody, transform.position, transform.rotation);
 
@@ -96,11 +97,12 @@ public class PlayerBuilder : MonoBehaviour
         }   
         else if (_isBuilding && Input.GetKeyDown(KeyCode.Q) 
             && _floorController.TryToBuild(buildingGO.GetComponent<BuildingContoller>())){
-
+            _floorController.DestroyBuildingMap();
             _building = null;
             _isBuilding = false;
 
         } else if (_isBuilding && Input.GetKeyDown(KeyCode.Escape)) {
+            _floorController.DestroyBuildingMap();
 
             _isBuilding = false;
             Destroy(buildingGO);
