@@ -14,18 +14,19 @@ public class GuestsFactory : MonoBehaviour
     
     private void Update()
     {
-        if(_standingTime >= 0 && _standingTime < _reloadTime)
+        
+        if(_standingTime < 0)
         {
-            _standingTime += Time.deltaTime;
-            return;
-        } else if (_standingTime >= 0)
+            _standingTime = _reloadTime;
+
+            GameObject spawnedGuest = Instantiate(_guest);
+            spawnedGuest.transform.SetPositionAndRotation(_spawnPlace.position, _spawnPlace.rotation);
+
+            _door.Open();
+        } else
         {
-            _standingTime = 0.01f;
+            _standingTime -= Time.deltaTime;
         }
-
-        GameObject spawnedGuest = GameObject.Instantiate(_guest);
-        spawnedGuest.transform.SetPositionAndRotation(_spawnPlace.position, _spawnPlace.rotation);
-
-        _door.Open();
+       
     }
 }
