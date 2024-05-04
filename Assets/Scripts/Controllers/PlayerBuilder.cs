@@ -9,11 +9,13 @@ public class PlayerBuilder : MonoBehaviour
     [SerializeField] private Transform _face;
     [SerializeField] private LayerMask _groundMask;
 
-    [SerializeField] private FloorController _floorController;
     [SerializeField] private BuildingsFactory _buildingsFactory;
 
     [SerializeField] private float _raycastField;
     [SerializeField] private float _rotationSpeed;
+
+    private Floor _floorController;
+    private BuildingsHandler _buildingsHandler;
 
     private GameObject buildingGO = null;
 
@@ -21,7 +23,14 @@ public class PlayerBuilder : MonoBehaviour
     private bool _isBuilding;
 
     private BuildingIndificator _buildingIndificator;
-    
+
+    private void Start()
+    {
+        _floorController = FindObjectOfType<Floor>();
+        _buildingsHandler = new BuildingsHandler();
+        _floorController.SetBuildingsHandler(_buildingsHandler);
+    }
+
 
     void Update()
     {
@@ -85,6 +94,13 @@ public class PlayerBuilder : MonoBehaviour
             buildingGO.transform.Rotate(buildingGO.transform.up, _rotationSpeed * Time.deltaTime * Input.GetAxis("BuildingsRotate"));
 
         }
+        BuildingContoller buildingContoller = null;
+        if (_building != null && _isBuilding)
+        {
+            buildingContoller = buildingGO.GetComponent<BuildingContoller>();
+            buildingContoller.SetData(_building);
+        }
+
         //Open\Close\Create
         if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
             _floorController.CreateBuildingMap();
@@ -96,7 +112,8 @@ public class PlayerBuilder : MonoBehaviour
             _isBuilding = true;
         }   
         else if (_isBuilding && Input.GetKeyDown(KeyCode.Q) 
-            && _floorController.TryToBuild(buildingGO.GetComponent<BuildingContoller>())){
+            && _floorController.IsItPossibleToBuild(buildingContoller)){
+            _buildingsHandler.Add(buildingContoller, _floorController.TryToBuild(buildingContoller));
             _floorController.DestroyBuildingMap();
             _building = null;
             _isBuilding = false;
@@ -109,5 +126,10 @@ public class PlayerBuilder : MonoBehaviour
 
             _building = null;
         }
+    }
+
+    public BuildingsHandler GetBuildingsHandler()
+    {
+        return _buildingsHandler;
     }
 }

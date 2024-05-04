@@ -6,13 +6,13 @@ public class Guest : MonoBehaviour
 {
     [SerializeField] private float _height;
     [SerializeField] private float _timeWait;
-    private FloorController _floorController;
+    private Floor _floorController;
     private MoveGuest _mover;
     private float _time;
     private bool _waiting;
     void Start()
     {
-        _floorController = FindAnyObjectByType<FloorController>();
+        _floorController = FindAnyObjectByType<Floor>();
        
         _mover = transform.GetComponent<MoveGuest>();
         if (_floorController == null)

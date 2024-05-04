@@ -25,11 +25,11 @@ public class MoveGuest : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(_point == -1 || _moving == null)
+        if(_point < 0 || _moving == null)
         {
             return;
         }
-        if(_point == _moving.Count - 1)
+        if(_point >= _moving.Count - 1)
         {
             _endOfMove();
 
@@ -37,7 +37,7 @@ public class MoveGuest : MonoBehaviour
             transform.position = _position;
         }
 
-        if(_point != _moving.Count - 1 && _waitingMove <= 0f)
+        if(_point < _moving.Count - 1 && _waitingMove <= 0f)
         {
             _point++;
             _waitingMove = _timeMove;
