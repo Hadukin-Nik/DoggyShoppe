@@ -27,7 +27,6 @@ public class BuildingsFactory : MonoBehaviour
                 buildings[index]._gameBody.AddComponent<BuildingContoller>();
                 bc = buildings[index]._gameBody.GetComponent<BuildingContoller>();
             }
-            bc.SetSize(buildings[index]._size);
             return buildings[index];
         }
         else

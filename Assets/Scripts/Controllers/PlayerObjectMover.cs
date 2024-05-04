@@ -1,3 +1,4 @@
+using System;
 using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
@@ -13,6 +14,7 @@ public class PlayerObjectMover : MonoBehaviour
 
     private ItemBox _itemInHands;
     private Transform _itemInHandsBody;
+
     private void Update()
     {
         if(_itemInHandsBody != null)
@@ -52,6 +54,4 @@ public class PlayerObjectMover : MonoBehaviour
             _itemInHandsBody = null;
         }
     }
-
-    
 }
