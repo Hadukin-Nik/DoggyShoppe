@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class MouseLook : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class MouseLook : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        _mouseSensetivitySlider.value = _mouseSensetivity;
     }
 
     private void Update()
@@ -25,5 +27,13 @@ public class MouseLook : MonoBehaviour
 
         _playerFace.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
         _playerBody.Rotate(Vector3.up * mouseX);
+    }
+
+    //CameraModel(?)
+    [SerializeField]
+    Slider _mouseSensetivitySlider;
+    public void ChangeSensitivity()
+    {
+        _mouseSensetivity = _mouseSensetivitySlider.value;
     }
 }
