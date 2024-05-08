@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.Audio;
 
 public class AudioManager : MonoBehaviour
 {
     public SoundTrack[] tracks;
-
+    public AudioMixerGroup mixer;
 
     private void Awake()
     {
@@ -15,6 +16,7 @@ public class AudioManager : MonoBehaviour
             track.source = gameObject.AddComponent<AudioSource>();
             track.source.clip = track.clip;
             track.source.volume = track.volume;
+            track.source.outputAudioMixerGroup = mixer;
         }
     }
     // Start is called before the first frame update

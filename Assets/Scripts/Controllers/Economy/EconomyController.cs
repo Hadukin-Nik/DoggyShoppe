@@ -1,12 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEditor.Search;
 using UnityEngine;
 
 public class EconomyController : MonoBehaviour
 {
     private static EconomyController instance;
     private EconomyModel model;
+    [SerializeField]
+    private int balance;
     public TextMeshProUGUI balanceText;
 
     public static EconomyController Instance
@@ -27,6 +30,12 @@ public class EconomyController : MonoBehaviour
         DontDestroyOnLoad(gameObject);
 
         model = new EconomyModel(0);
+        balance = model.Balance;
+        UpdateBalanceDisplay();
+    }
+    private void Update()
+    {
+        model.Balance = balance;
         UpdateBalanceDisplay();
     }
     public void AddMoney(int amount = 100)

@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Audio;
 
 public class PauseMenuController : MonoBehaviour
 {
+    public AudioMixer mixer;
+
     bool settingsOpened = false;
     private PauseMenuModel model;
     public Canvas menuCanvas;
@@ -78,5 +81,10 @@ public class PauseMenuController : MonoBehaviour
     public void LoadMainMenu()
     {
         LoadScene("MainMenu");
+    }
+
+    public void SetVolume(float v)
+    {
+        mixer.SetFloat("Volume", v);
     }
 }

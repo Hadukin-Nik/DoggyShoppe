@@ -9,6 +9,7 @@ public class EconomyModel
     public int Balance
     {
         get { return balance; }
+        set { balance = value; }
     }
 
     public EconomyModel(int startingBalance)
