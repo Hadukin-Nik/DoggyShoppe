@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class FloorController
 {
-    private KeyValuePair<int, int> _matrixSize;
+    private (int, int) _matrixSize;
 
     private Vector3 _pointStart;
 
@@ -21,7 +21,7 @@ public class FloorController
     private Vector3 _correctRightVector;
 
 
-    public FloorController(KeyValuePair<int, int> realMatrixSize, Transform pointStart, Vector3 correctFwdVector, Vector3 correctRghtVector, float divisionUnit)
+    public FloorController((int, int) realMatrixSize, Transform pointStart, Vector3 correctFwdVector, Vector3 correctRghtVector, float divisionUnit)
     {
         _matrixSize = realMatrixSize;
         _correctForwardVector = correctFwdVector;
@@ -30,7 +30,7 @@ public class FloorController
         _divisionUnit = divisionUnit;
         _pointStart = pointStart.position;
         //False means - no building on that point
-        _buildingMatrix = new bool[realMatrixSize.Key, realMatrixSize.Value];
+        _buildingMatrix = new bool[realMatrixSize.Item1, realMatrixSize.Item2];
 
         _transformationMatrix = new float[2, 2];
         _transformedGlobalPivot = new float[2, 1];
@@ -50,23 +50,23 @@ public class FloorController
     }
 
 
-    public Vector3 fromMatrixToGlobal(KeyValuePair<int, int> point)
+    public Vector3 fromMatrixToGlobal((int, int) point)
     {
-        return point.Value * _correctForwardVector + point.Key * _correctRightVector + _pointStart;
+        return point.Item2 * _correctForwardVector + point.Item1 * _correctRightVector + _pointStart;
     }
 
-    public KeyValuePair<int, int> fromGlobalToMatrix(Vector3 point)
+    public (int, int) fromGlobalToMatrix(Vector3 point)
     {
         float xT = _transformationMatrix[0, 0] * point.x + _transformationMatrix[0, 1] * point.z + _transformedGlobalPivot[0, 0];
         float zT = _transformationMatrix[1, 0] * point.x + _transformationMatrix[1, 1] * point.z + _transformedGlobalPivot[1, 0];
 
-        if (xT < 0 || zT < 0 || xT > _matrixSize.Key * _divisionUnit || zT > _matrixSize.Value * _divisionUnit)
+        if (xT < 0 || zT < 0 || xT > _matrixSize.Item1 * _divisionUnit || zT > _matrixSize.Item2 * _divisionUnit)
         {
             return findClosestPointInPeremeter(point);
         }
         else
         {
-            return new KeyValuePair<int, int>((int)(xT / _divisionUnit), (int)(zT / _divisionUnit));
+            return ((int)(xT / _divisionUnit), (int)(zT / _divisionUnit));
         }
     }
 
@@ -77,8 +77,8 @@ public class FloorController
         //ab
         //cd
         Vector3 a = _pointStart;
-        Vector3 b = _pointStart + _correctForwardVector * _matrixSize.Value;
-        Vector3 d = _pointStart + _correctRightVector * _matrixSize.Key;
+        Vector3 b = _pointStart + _correctForwardVector * _matrixSize.Item2;
+        Vector3 d = _pointStart + _correctRightVector * _matrixSize.Item1;
 
         Vector3 am = point - a;
         Vector3 ab = b - a;
@@ -90,12 +90,12 @@ public class FloorController
 
     public bool IsItPossibleToBuild(BuildingContoller buildingContoller)
     {
-        return isItPossibleToBuild(buildingContoller.GetTransform(), buildingContoller.GetSize(), false).Key;
+        return isItPossibleToBuild(buildingContoller.GetTransform(), buildingContoller.GetSize(), false).Item1;
     }
 
-    public List<KeyValuePair<int, int>> TryToBuild(BuildingContoller buildingContoller)
+    public List<(int, int)> TryToBuild(BuildingContoller buildingContoller)
     {
-        return isItPossibleToBuild(buildingContoller.GetTransform(), buildingContoller.GetSize(), true).Value;
+        return isItPossibleToBuild(buildingContoller.GetTransform(), buildingContoller.GetSize(), true).Item2;
     }
 
     public bool[,] getBuildingMatrix()
@@ -103,7 +103,7 @@ public class FloorController
         return _buildingMatrix;
     }
 
-    private KeyValuePair<bool, List<KeyValuePair<int, int>>> isItPossibleToBuild(Transform buildingTransform, Vector3 buildingSize, bool buildImmediately)
+    private (bool, List<(int, int)>) isItPossibleToBuild(Transform buildingTransform, Vector3 buildingSize, bool buildImmediately)
     {
         float exp = 0.1f;
         List<Vector3> pointsOnMatrix = new List<Vector3>();
@@ -125,9 +125,9 @@ public class FloorController
 
                 Vector3 point = new Vector3(xT / _divisionUnit, 0, zT / _divisionUnit);
 
-                if(xT <= 0 || zT <= 0 || xT >= _matrixSize.Key * _divisionUnit || zT >= _matrixSize.Value * _divisionUnit || _buildingMatrix[(int)(point.x), (int)(point.z)])
+                if(xT <= 0 || zT <= 0 || xT >= _matrixSize.Item1 * _divisionUnit || zT >= _matrixSize.Item2 * _divisionUnit || _buildingMatrix[(int)(point.x), (int)(point.z)])
                 {
-                    return new KeyValuePair<bool, List<KeyValuePair<int, int>>>(false, null);
+                    return (false, null);
                 } else
                 {
                     pointsOnMatrix.Add(point);
@@ -137,18 +137,18 @@ public class FloorController
 
         if(!buildImmediately)
         {
-            return new KeyValuePair<bool, List<KeyValuePair<int, int>>>(true, null);
+            return(true, null);
         }
 
-        List<KeyValuePair<int, int>> map = new List<KeyValuePair<int, int>>();
+        List<(int, int)> map = new List<(int, int)>();
 
         foreach(Vector3 point in pointsOnMatrix)
         {
-            map.Add(new KeyValuePair<int, int>((int)(point.x), (int)(point.z)));
+            map.Add(((int)(point.x), (int)(point.z)));
             _buildingMatrix[(int)(point.x), (int)(point.z)] = true;
         }
       
-        return new KeyValuePair<bool, List<KeyValuePair<int, int>>>(true, map);
+        return (true, map);
     }
 
     private double scal(Vector3 a, Vector3 b)
@@ -156,18 +156,18 @@ public class FloorController
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    private KeyValuePair<int, int> findClosestPointInPeremeter(Vector3 point)
+    private (int, int) findClosestPointInPeremeter(Vector3 point)
     {
-        KeyValuePair<int, int> ans = new KeyValuePair<int, int>(0, 0);
+       (int, int) ans = (0, 0);
         Vector3 ansP = _pointStart;
-        for (int i = 0; i < _matrixSize.Key; i++)
+        for (int i = 0; i < _matrixSize.Item1; i++)
         {
-            KeyValuePair<int, int> pointB;
-            if (i == 0 || i == _matrixSize.Key - 1)
+            (int, int) pointB;
+            if (i == 0 || i == _matrixSize.Item1 - 1)
             {
-                for (int j = 0; j < _matrixSize.Value; j++)
+                for (int j = 0; j < _matrixSize.Item2; j++)
                 {
-                    pointB = new KeyValuePair<int, int>(i, j);
+                    pointB = (i, j);
                     Vector3 point1 = fromMatrixToGlobal(pointB);
 
                     if ((point - point1).sqrMagnitude < (point - ansP).sqrMagnitude)
@@ -179,7 +179,7 @@ public class FloorController
             }
             else
             {
-                pointB = new KeyValuePair<int, int>(i, 0);
+                pointB = (i, 0);
                 Vector3 point1 = fromMatrixToGlobal(pointB);
 
                 if ((point - point1).sqrMagnitude < (point - ansP).sqrMagnitude)
@@ -188,8 +188,8 @@ public class FloorController
                     ansP = point1;
                 }
 
-                pointB = new KeyValuePair<int, int>(i, Mathf.Abs(_matrixSize.Value - 1));
-                Vector3 point2 = fromMatrixToGlobal(new KeyValuePair<int, int>(i, Mathf.Abs(_matrixSize.Value - 1)));
+                pointB = (i, Mathf.Abs(_matrixSize.Item2 - 1));
+                Vector3 point2 = fromMatrixToGlobal((i, Mathf.Abs(_matrixSize.Item2 - 1)));
 
                 if ((point - point2).sqrMagnitude < (point - ansP).sqrMagnitude)
                 {

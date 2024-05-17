@@ -9,7 +9,7 @@ public class DebugBuildingLayout : MonoBehaviour
     private GameObject _redDebugPlane;
 
     private Transform _pointStart;
-    private KeyValuePair<int, int> _size;
+    private (int, int) _size;
 
     private Stack<GameObject> _stack;
     //OZ axis (local)
@@ -17,7 +17,7 @@ public class DebugBuildingLayout : MonoBehaviour
     //OX axis (local)
     private Vector3 _correctRightVector;
     
-    public DebugBuildingLayout(GameObject greenDebugPlane, GameObject redDebugPlane, Transform pointStart, KeyValuePair<int, int> size, Vector3 correctForwardVector, Vector3 correctRightVector)
+    public DebugBuildingLayout(GameObject greenDebugPlane, GameObject redDebugPlane, Transform pointStart, (int, int) size, Vector3 correctForwardVector, Vector3 correctRightVector)
     {
         _greenDebugPlane = greenDebugPlane;
         _redDebugPlane = redDebugPlane;
@@ -37,9 +37,9 @@ public class DebugBuildingLayout : MonoBehaviour
             GameObject gb = _stack.Pop();
             Destroy(gb);
         }
-        for (int i = 0; i < _size.Key; i++)
+        for (int i = 0; i < _size.Item1; i++)
         {
-            for (int j = 0; j < _size.Value; j++)
+            for (int j = 0; j < _size.Item2; j++)
             {
                 if (!buildingMatrix[i, j])
                 {

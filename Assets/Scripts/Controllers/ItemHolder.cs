@@ -15,8 +15,6 @@ public class ItemHolder : MonoBehaviour
 
     private int _maxCount;
 
-    private float price = 1000f;
-
     private void Start()
     {
         GameObject mainPoint = GameObject.FindWithTag(_mainPointTag);

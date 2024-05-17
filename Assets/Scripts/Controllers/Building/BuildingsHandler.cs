@@ -4,25 +4,26 @@ using UnityEngine;
 
 public class BuildingsHandler
 {
-    //Here I have ALL BUILDED buildings with there placement dots in matrix
-    private List<KeyValuePair<BuildingContoller, List<KeyValuePair<int, int>>>>_buildings;
-    
+    //Here I have ALL BUILDED structures with there placement dots in matrix
+    private List<(BuildingContoller, List<(int, int)>)> _buildings;
+
+
     public BuildingsHandler()
     {
-        _buildings = new List<KeyValuePair<BuildingContoller, List<KeyValuePair<int, int>>>>();
+        _buildings = new List<(BuildingContoller, List<(int, int)>)>();
     }
 
-    public KeyValuePair<BuildingContoller, List<KeyValuePair<int, int>>> getRandom()
+    public (BuildingContoller, List<(int, int)>) getRandom()
     {
         return _buildings[Random.Range(0, _buildings.Count)];
     }
 
-    public void Add(BuildingContoller buildingContoller, List<KeyValuePair<int, int>> dotsInMatrix)
+    public void Add(BuildingContoller buildingContoller, List<(int, int)> dotsInMatrix)
     {
-        _buildings.Add(new KeyValuePair<BuildingContoller, List<KeyValuePair<int, int>>>(buildingContoller, dotsInMatrix));
+        _buildings.Add((buildingContoller, dotsInMatrix));
     }
 
-    public List<KeyValuePair<BuildingContoller, List<KeyValuePair<int, int>>>> GetAll()
+    public List<(BuildingContoller, List<(int, int)>)> GetAll()
     {
         return _buildings;
     }
