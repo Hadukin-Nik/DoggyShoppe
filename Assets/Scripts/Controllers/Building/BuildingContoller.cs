@@ -1,7 +1,10 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingContoller : MonoBehaviour
 {
+    [SerializeField] private List<ItemHolder> _shelfs;
+
     private Building _data;
     
 
@@ -13,9 +16,17 @@ public class BuildingContoller : MonoBehaviour
     public void SetData(Building data) { 
         _data = data;
     }
-
+    public BuildingsConsts.BuildingIndificator GetIndificator()
+    {
+        return _data.getBuildingIndificator();
+    }
     public Transform GetTransform()
     {
         return transform;
+    }
+
+    public List<ItemHolder> GetItemHolders()
+    {
+        return _shelfs;
     }
 }

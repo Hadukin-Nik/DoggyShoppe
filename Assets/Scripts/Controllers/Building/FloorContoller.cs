@@ -98,6 +98,11 @@ public class FloorController
         return isItPossibleToBuild(buildingContoller.GetTransform(), buildingContoller.GetSize(), true).Item2;
     }
 
+    public List<(int, int)> TryToBuild(Transform transform, Vector3 size)
+    {
+        return isItPossibleToBuild(transform, size, true).Item2;
+    }
+
     public bool[,] getBuildingMatrix()
     {
         return _buildingMatrix;
@@ -106,7 +111,7 @@ public class FloorController
     private (bool, List<(int, int)>) isItPossibleToBuild(Transform buildingTransform, Vector3 buildingSize, bool buildImmediately)
     {
         float exp = 0.1f;
-        List<Vector3> pointsOnMatrix = new List<Vector3>();
+        HashSet<(int, int)> pointsOnMatrix = new HashSet<(int, int)>();
 
         for(int i = 0; i < buildingSize.x / _divisionUnit / exp; i++)
         {
@@ -122,10 +127,9 @@ public class FloorController
 
                 float xT = _transformationMatrix[0, 0] * xG + _transformationMatrix[0, 1] * zG + _transformedGlobalPivot[0, 0];
                 float zT = _transformationMatrix[1, 0] * xG + _transformationMatrix[1, 1] * zG + _transformedGlobalPivot[1, 0];
+                (int, int) point = ((int)(xT / _divisionUnit), (int)(zT / _divisionUnit));
 
-                Vector3 point = new Vector3(xT / _divisionUnit, 0, zT / _divisionUnit);
-
-                if(xT <= 0 || zT <= 0 || xT >= _matrixSize.Item1 * _divisionUnit || zT >= _matrixSize.Item2 * _divisionUnit || _buildingMatrix[(int)(point.x), (int)(point.z)])
+                if (xT <= 0 || zT <= 0 || xT >= _matrixSize.Item1 * _divisionUnit || zT >= _matrixSize.Item2 * _divisionUnit || _buildingMatrix[(int)(point.Item1), (int)(point.Item2)])
                 {
                     return (false, null);
                 } else
@@ -142,10 +146,10 @@ public class FloorController
 
         List<(int, int)> map = new List<(int, int)>();
 
-        foreach(Vector3 point in pointsOnMatrix)
+        foreach((int, int) point in pointsOnMatrix)
         {
-            map.Add(((int)(point.x), (int)(point.z)));
-            _buildingMatrix[(int)(point.x), (int)(point.z)] = true;
+            map.Add(((int)(point.Item1), (int)(point.Item2)));
+            _buildingMatrix[(int)(point.Item1), (int)(point.Item2)] = true;
         }
       
         return (true, map);
@@ -156,7 +160,7 @@ public class FloorController
         return a.x * b.x + a.y * b.y + a.z * b.z;
     }
 
-    private (int, int) findClosestPointInPeremeter(Vector3 point)
+    public (int, int) findClosestPointInPeremeter(Vector3 point)
     {
        (int, int) ans = (0, 0);
         Vector3 ansP = _pointStart;

@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using static BuildingsConsts;
 
@@ -15,7 +13,6 @@ public class PlayerBuilder : MonoBehaviour
     [SerializeField] private float _rotationSpeed;
 
     private Floor _floorController;
-    private BuildingsHandler _buildingsHandler;
 
     private GameObject buildingGO = null;
 
@@ -27,8 +24,6 @@ public class PlayerBuilder : MonoBehaviour
     private void Start()
     {
         _floorController = FindObjectOfType<Floor>();
-        _buildingsHandler = new BuildingsHandler();
-        _floorController.SetBuildingsHandler(_buildingsHandler);
     }
 
 
@@ -42,13 +37,12 @@ public class PlayerBuilder : MonoBehaviour
         //Move
         if(_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask))
         {
-            buildingGO.transform.position = new Vector3(hit.point.x, hit.point.y, hit.point.z);
+            buildingGO.transform.position = new Vector3(hit.point.x, hit.point.y + _building._size.y/2, hit.point.z);
         }
         //Change
         if(_isBuilding && Input.GetKeyDown(KeyCode.RightBracket))
         {
             Debug.Log("RIGHT BRACKET");
-            Vector3 position = buildingGO.transform.position;
 
             Destroy(buildingGO);
 
@@ -59,15 +53,26 @@ public class PlayerBuilder : MonoBehaviour
             {
                 _buildingIndificator += 1;
             }
+
             _building = _buildingsFactory.Get(_buildingIndificator);
 
-            buildingGO = Instantiate(_building._gameBody);
+            while(_building == null)
+            {
+                if ((int)_buildingIndificator + 1 >= Enum.GetValues(typeof(BuildingIndificator)).Length)
+                {
+                    _buildingIndificator = 0;
+                }
+                else
+                {
+                    _buildingIndificator += 1;
+                }
+                _building = _buildingsFactory.Get(_buildingIndificator);
+            }
 
-            buildingGO.transform.position = position;
+            buildingGO = Instantiate(_building._gameBody);
         } else if (_isBuilding && Input.GetKeyDown(KeyCode.LeftBracket))
         {
             Debug.Log("LEFT BRACKET");
-            Vector3 position = buildingGO.transform.position;
 
             Destroy(buildingGO);
 
@@ -82,9 +87,21 @@ public class PlayerBuilder : MonoBehaviour
 
             _building = _buildingsFactory.Get(_buildingIndificator);
 
-            buildingGO = Instantiate(_building._gameBody);
+            while(_building == null)
+            {
+                if ((int)_buildingIndificator - 1 < 0)
+                {
+                    _buildingIndificator = (BuildingIndificator)(Enum.GetValues(typeof(BuildingIndificator)).Length - 1);
+                }
+                else
+                {
+                    _buildingIndificator--;
+                }
 
-            buildingGO.transform.position = position;
+                _building = _buildingsFactory.Get(_buildingIndificator);
+            }
+
+            buildingGO = Instantiate(_building._gameBody);
         }
 
         //rotating
@@ -107,13 +124,13 @@ public class PlayerBuilder : MonoBehaviour
             _building = _buildingsFactory.Get(BuildingIndificator.Desk1);
             buildingGO = Instantiate(_building._gameBody, transform.position, transform.rotation);
 
-            buildingGO.transform.SetPositionAndRotation(new Vector3(hit.point.x, hit.point.y, hit.point.z), transform.rotation);
             _buildingIndificator = BuildingIndificator.Desk1;
             _isBuilding = true;
-        }   
+        }
         else if (_isBuilding && Input.GetKeyDown(KeyCode.Q) 
             && _floorController.IsItPossibleToBuild(buildingContoller)){
-            _buildingsHandler.Add(buildingContoller, _floorController.TryToBuild(buildingContoller));
+            buildingGO.GetComponentInChildren<BoxCollider>().isTrigger = false;
+            _floorController.TryToBuild(buildingContoller);
             _floorController.DestroyBuildingMap();
             _building = null;
             _isBuilding = false;
@@ -126,10 +143,5 @@ public class PlayerBuilder : MonoBehaviour
 
             _building = null;
         }
-    }
-
-    public BuildingsHandler GetBuildingsHandler()
-    {
-        return _buildingsHandler;
     }
 }

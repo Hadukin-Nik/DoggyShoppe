@@ -6,9 +6,6 @@ using UnityEngine;
 [CustomEditor(typeof(ItemFactory))]
 public class ListItemInspector : Editor
 {
-    private enum displayFieldType { DisplayAsAutomaticFields, DisplayAsCustomizableGUIFields }
-    //private displayFieldType _displayFieldType;
-
     private ItemFactory _classHolder;
     private SerializedObject _targetObject;
     private SerializedProperty _list;
@@ -29,7 +26,6 @@ public class ListItemInspector : Editor
         //Choose how to display the list<> Example purposes only
         EditorGUILayout.Space();
         EditorGUILayout.Space();
-        //_displayFieldType = (displayFieldType)EditorGUILayout.EnumPopup("", _displayFieldType);
 
         //Resize our list
         EditorGUILayout.Space();

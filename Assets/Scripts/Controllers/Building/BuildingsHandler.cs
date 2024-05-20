@@ -1,30 +1,33 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingsHandler
 {
     //Here I have ALL BUILDED structures with there placement dots in matrix
-    private List<(BuildingContoller, List<(int, int)>)> _buildings;
-
+    private HashSetNListStructure<ItemHolder> _buildingStructure;
 
     public BuildingsHandler()
     {
-        _buildings = new List<(BuildingContoller, List<(int, int)>)>();
+        _buildingStructure = new HashSetNListStructure<ItemHolder>();
     }
 
-    public (BuildingContoller, List<(int, int)>) getRandom()
+    public List<(int, int)> GetRandom()
     {
-        return _buildings[Random.Range(0, _buildings.Count)];
+        return _buildingStructure.GetRandom().getPoints();
     }
 
-    public void Add(BuildingContoller buildingContoller, List<(int, int)> dotsInMatrix)
+    public void Add(ItemHolder buildingContoller)
     {
-        _buildings.Add((buildingContoller, dotsInMatrix));
+        _buildingStructure.Add(buildingContoller);
     }
 
-    public List<(BuildingContoller, List<(int, int)>)> GetAll()
+    public List<ItemHolder> GetAll()
     {
-        return _buildings;
+        return _buildingStructure.GetAll();
+    }
+
+    public ItemHolder getRandom()
+    {
+        return _buildingStructure.GetRandom();
     }
 }

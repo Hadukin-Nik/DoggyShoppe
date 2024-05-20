@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -71,7 +70,8 @@ public class PathFindingController
         bool isFind = false;
         while (distances.Count > 0 && !isFind)
         {
-            Stack<(int, int)> pointBuf = points.GetValueOrDefault(distances.Min);
+            int distBuf = distances.Min;
+            Stack<(int, int)> pointBuf = points.GetValueOrDefault(distBuf);
 
             while (pointBuf.Count > 0)
             {
@@ -85,7 +85,7 @@ public class PathFindingController
                     for (int j = -1; j < 2; j++)
                     {
                         (int, int) kb = (i + point.Item1, j + point.Item2);
-                        if (!isInBounds(kb.Item1, kb.Item2) || isChecked[kb.Item1, kb.Item2] || buildingMatrix[kb.Item1, kb.Item2] && !inList(kb, endPoints)) continue;
+                        if (!isInBounds(kb.Item1, kb.Item2) || isChecked[kb.Item1, kb.Item2] || (buildingMatrix[kb.Item1, kb.Item2] && !inList(kb, endPoints) && !(kb.Item1 == startPoint.Item1 && kb.Item2 == startPoint.Item2))) continue;
 
                         distination = (int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude;
 
@@ -109,10 +109,10 @@ public class PathFindingController
                 }
             }
 
-            distances.Remove(distances.Min);
+            distances.Remove(distBuf);
         }
 
-        if (isInBounds(last.Item1, last.Item2))
+        if (isFind)
         {
             Stack<(int, int)> keyValuePairs = new Stack<(int, int)>();
             while (last.Item1 != startPoint.Item1 || last.Item2 != startPoint.Item2)
@@ -122,7 +122,7 @@ public class PathFindingController
             }
 
             List<Vector3> ans = new List<Vector3>();
-            while (keyValuePairs.Count > 0)
+            while (keyValuePairs.Count > 2)
             {
                 (int, int) pair = keyValuePairs.Pop();
                 ans.Add(toPointFromMatrix(pair.Item1, pair.Item2) + _pointStart);
