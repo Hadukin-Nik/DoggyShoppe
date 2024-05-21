@@ -64,6 +64,10 @@ public class ItemHolder : MonoBehaviour
     }
 
     public void DestroyLastItem() {
+        if(_itemStack.Count == 0)
+        {
+            Console.Error.WriteLine("Guests trying get items, that arent in stock");
+        }
         GameObject item = _itemStack.Pop();
 
         Destroy(item);
@@ -92,6 +96,7 @@ public class ItemHolder : MonoBehaviour
     private void placeItem()
     {
         _free++;
+        
         float deltaZ = (_itemStack.Count / (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.x;
         float deltaX = (_itemStack.Count % (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.z;
 

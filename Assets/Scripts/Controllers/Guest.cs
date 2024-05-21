@@ -37,22 +37,26 @@ public class Guest : MonoBehaviour
             List<Vector3> points = new List<Vector3>();
             Queue<int> itemHolders = new Queue<int>();
             List<(ItemHolder, int)> holdersItems = new List<(ItemHolder, int)> ();
+            HashSet<ItemHolder> visited = new HashSet<ItemHolder>();
             int lengthWay = UnityEngine.Random.Range(1, 4);
             _items = new Queue<(ItemHolder, int)>();
             for(int l = 0; l < lengthWay; l++)
             {
                 
                 (List<Vector3>, ItemHolder) points2 = _floorController.GetWayToRandom(point);
-                if (points2.Item1 == null || points2.Item2.getFreeItems() == 0)
+                ItemHolder item = points2.Item2;
+
+                if (item == null || item.getFreeItems() == 0 || visited.Contains(item))
                 {
                     continue;
                 }
-                ItemHolder item = points2.Item2;
+                
+                visited.Add(item);
                 points.AddRange(points2.Item1);
                 point = points[points.Count - 1];
                 itemHolders.Enqueue(points.Count - 1);
                 int use = UnityEngine.Random.RandomRange(1, Math.Max(1, Math.Min(item.getFreeItems(), 6)));
-                _items.Enqueue((points2.Item2, use));
+                _items.Enqueue((item, use));
                 holdersItems.Add((item, item.getFreeItems() - use));
             }
 

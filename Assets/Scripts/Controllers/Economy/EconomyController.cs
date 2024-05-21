@@ -18,7 +18,7 @@ public class EconomyController : MonoBehaviour
     }
     private void Awake()
     {
-        //singleton ne obyazatelen
+        //singleton not required
         if (instance == null)
         {
             instance = this;
@@ -54,6 +54,11 @@ public class EconomyController : MonoBehaviour
     {
         model.ResetBalance();
         UpdateBalanceDisplay();
+    }
+
+    public void SetBalance(int newB)
+    {
+        balance = newB;
     }
 
     private void UpdateBalanceDisplay()
