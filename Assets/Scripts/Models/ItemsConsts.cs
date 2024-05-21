@@ -2,6 +2,6 @@ public class ItemsConsts
 {
     public enum ItemIndificator
     {
-        Bone, Meat, Sword, Bowl, Hat, Empty
+        Bone, Meat, Sword, Bowl, Hat, Carrot, Empty
     }
 }

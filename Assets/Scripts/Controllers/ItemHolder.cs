@@ -97,15 +97,20 @@ public class ItemHolder : MonoBehaviour
     {
         _free++;
         
-        float deltaZ = (_itemStack.Count / (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.x;
-        float deltaX = (_itemStack.Count % (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.z;
+        float deltaZ = (_itemStack.Count / (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.z;
+        float deltaX = (_itemStack.Count % (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.x;
 
         Vector3 nv = (_itemPrefab._size.x / 2 + deltaX) * _pivot.right + (_itemPrefab._size.z / 2 + deltaZ) * _pivot.forward;
 
         float x = nv.x + _pivot.position.x;
         float z = nv.z + _pivot.position.z;
-        
-        _itemStack.Push(Instantiate(_itemPrefab._gameBody, new Vector3(x, transform.position.y, z), transform.rotation));
+        Quaternion rotation = transform.rotation;
+        rotation.x += _itemPrefab._gameBody.transform.rotation.x;
+        rotation.y += _itemPrefab._gameBody.transform.rotation.y;
+        rotation.z += _itemPrefab._gameBody.transform.rotation.z;
+        _itemStack.Push(Instantiate(_itemPrefab._gameBody, new Vector3(x, transform.position.y, z), rotation));
+
+
     }
 
 }
