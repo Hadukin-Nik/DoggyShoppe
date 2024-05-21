@@ -23,6 +23,10 @@ public class PlaceableObject {
         this._gameBody = gameBody;
     }
 
+    public void setSize(Vector3 size) {
+        _size = size;
+    }
+
     public string getName() { return _name; }
     public void setName(string name)
     {

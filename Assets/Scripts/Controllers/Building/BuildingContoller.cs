@@ -1,23 +1,32 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BuildingContoller : MonoBehaviour
 {
-    [SerializeField] private Vector3 _size;
+    [SerializeField] private List<ItemHolder> _shelfs;
+
+    private Building _data;
     
-    public BuildingContoller(Vector3 size)
-    {
-        _size = size;   
-    }
 
     public Vector3 GetSize()
     {
-        return _size;
+        return _data._size;
     }
 
-    public void SetSize(Vector3 size) { _size = size; }
-
+    public void SetData(Building data) { 
+        _data = data;
+    }
+    public BuildingsConsts.BuildingIndificator GetIndificator()
+    {
+        return _data.getBuildingIndificator();
+    }
     public Transform GetTransform()
     {
         return transform;
+    }
+
+    public List<ItemHolder> GetItemHolders()
+    {
+        return _shelfs;
     }
 }

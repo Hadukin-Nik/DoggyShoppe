@@ -12,6 +12,7 @@ public class MoveGuest : MonoBehaviour
     private float _height = 0f;
 
     private List<Vector3> _moving;
+    private Queue<int> _indexes;
     private int _point = 0;
 
     private Action _endOfMove;
@@ -19,26 +20,32 @@ public class MoveGuest : MonoBehaviour
     {
         _point = -1;
         _position = transform.position;
-        _moving = new List<Vector3>();  
+        _moving = new List<Vector3>();
+        _indexes = new Queue<int>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(_point == -1 || _moving == null)
+        if(_indexes.Count > 0 && _indexes.Peek() <= _point)
+        {
+            _indexes.Dequeue();
+            _endOfMove();
+        }
+        if(_point < 0 || _moving == null)
         {
             return;
         }
-        if(_point == _moving.Count - 1)
+        if(_point >= _moving.Count - 1)
         {
-            _endOfMove();
 
             _point = -1;
             transform.position = _position;
         }
 
-        if(_point != _moving.Count - 1 && _waitingMove <= 0f)
+        if(_point < _moving.Count - 1 && _waitingMove <= 0f)
         {
+
             _point++;
             _waitingMove = _timeMove;
 
@@ -48,7 +55,8 @@ public class MoveGuest : MonoBehaviour
         _waitingMove -= Time.deltaTime;
     }
 
-    public void Move(List<Vector3> points) {
+    public void Move(List<Vector3> points, Queue<int> useIndex) {
+        _indexes = useIndex;
         transform.position = _position;
         _moving = points;
         _point = 0;

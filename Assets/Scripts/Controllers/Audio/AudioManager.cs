@@ -36,6 +36,5 @@ public class AudioManager : MonoBehaviour
     {
         SoundTrack t = Array.Find(tracks, track => track.name == name);
         t.source.loop = true;
-        t.source.Play();
     }
 }

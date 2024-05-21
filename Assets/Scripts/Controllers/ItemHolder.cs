@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,13 +10,14 @@ public class ItemHolder : MonoBehaviour
 
     private ItemFactory _factory;
 
+    private List<(int, int)> _points;
+
     private Item _itemPrefab;
     
     private Stack<GameObject> _itemStack;
 
     private int _maxCount;
-
-    private float price = 1000f;
+    private int _free;
 
     private void Start()
     {
@@ -40,9 +42,14 @@ public class ItemHolder : MonoBehaviour
         return e;
     }
 
-    public bool IsItemDecplaceable()
+    public int getFreeItems()
     {
-        return _itemStack.Count > 0;
+        return _free;
+    }
+
+    public void setFreeItems(int free)
+    {
+        _free = free;
     }
 
     public void AddNewItem(ItemsConsts.ItemIndificator toPlace)
@@ -67,16 +74,32 @@ public class ItemHolder : MonoBehaviour
         }
     }
 
+    public List<(int, int)> getPoints()
+    {
+        if(_points == null)
+        {
+            Console.Error.WriteLine("ERROR IN ITEM HOLDER: there are no set points");
+        }
+
+        return _points;
+    }
+    public void setPoints(List<(int, int)> points)
+    {
+        _points = points;
+    }
+
+
     private void placeItem()
-    { 
+    {
+        _free++;
         float deltaZ = (_itemStack.Count / (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.x;
         float deltaX = (_itemStack.Count % (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.z;
 
-        Vector3 nv = (_itemPrefab._size.x / 2 + deltaX) * transform.right + (_itemPrefab._size.z / 2 + deltaZ) * transform.forward;
+        Vector3 nv = (_itemPrefab._size.x / 2 + deltaX) * _pivot.right + (_itemPrefab._size.z / 2 + deltaZ) * _pivot.forward;
 
         float x = nv.x + _pivot.position.x;
         float z = nv.z + _pivot.position.z;
-
+        
         _itemStack.Push(Instantiate(_itemPrefab._gameBody, new Vector3(x, transform.position.y, z), transform.rotation));
     }
 
