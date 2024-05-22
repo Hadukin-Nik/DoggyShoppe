@@ -1,67 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.Search;
 using UnityEngine;
 
+[SerializeField]
 public class EconomyController : MonoBehaviour
 {
-    private static EconomyController instance;
-    private EconomyModel model;
-    [SerializeField]
-    private int balance;
+    public BalanceModel model;
+    public Canvas IngameCanvas;
     public TextMeshProUGUI balanceText;
-
-    public static EconomyController Instance
-    {
-        get { return instance; }
-    }
+    [SerializeField]
+    int balance;
+    // Start is called before the first frame update
     private void Awake()
     {
-        //singleton not required
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        DontDestroyOnLoad(gameObject);
+        model = new BalanceModel();
 
-        model = new EconomyModel(0);
-        balance = model.Balance;
-        UpdateBalanceDisplay();
     }
-    private void Update()
+    void Start()
     {
-        model.Balance = balance;
-        UpdateBalanceDisplay();
-    }
-    public void AddMoney(int amount = 100)
-    {
-        model.AddMoney(amount);
-        UpdateBalanceDisplay();
+        model.SetMoney(balance);
+        UpdateUI();
     }
 
-    public void RemoveMoney(int amount = 100)
+    // Update is called once per frame
+    void Update()
     {
-        model.RemoveMoney(amount);
-        UpdateBalanceDisplay();
+        
+        model.SetMoney(balance);
     }
 
-    public void ResetBalance()
+    public void AddMoney(int d)
     {
-        model.ResetBalance();
-        UpdateBalanceDisplay();
+        balance += d;
+        model.AddMoney(d);
+        UpdateUI();
     }
-
-    public void SetBalance(int newB)
+    public void RemoveMoney(int d)
     {
-        balance = newB;
+        balance -= d;
+        model.RemoveMoney(d);
+        UpdateUI();
     }
-
-    private void UpdateBalanceDisplay()
+    public void SetMoney(int d)
+    {
+        balance = d;
+        model.SetMoney(d);
+        UpdateUI();
+    }
+    public void UpdateUI()
     {
         balanceText.text = model.Balance.ToString();
     }
