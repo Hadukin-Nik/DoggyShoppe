@@ -1763,7 +1763,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8216d251114ae774fa454bdb50e4d470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemIndificator: 0
+  itemIndificator: 2
   _countOfItems: 200
 --- !u!1 &1035015126
 GameObject:
@@ -2609,7 +2609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8216d251114ae774fa454bdb50e4d470, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemIndificator: 1
+  itemIndificator: 5
   _countOfItems: 200
 --- !u!65 &1970718238
 BoxCollider:
@@ -2652,7 +2652,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fdaf291e4587bac408b42ccdf79e0baa, type: 2}
+  - {fileID: 2100000, guid: 06055a45ba86edb4fb87bde68bfc7b84, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

@@ -60,7 +60,7 @@ MonoBehaviour:
     _name: Carrot
     _itemIndificator: 5
   - _gameBody: {fileID: 5045948216733254446, guid: 38bc8878e559c224f9ea72907100a3aa, type: 3}
-    _size: {x: 0.25, y: 3, z: 0.25}
+    _size: {x: 0.25, y: 2, z: 0.25}
     _name: Sword
     _itemIndificator: 2
   - _gameBody: {fileID: 0}

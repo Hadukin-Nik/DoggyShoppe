@@ -112,7 +112,7 @@ public class PathFindingController
                         (int, int) kb = (i + point.Item1, j + point.Item2);
                         if (!isInBounds(kb.Item1, kb.Item2) || isChecked[kb.Item1, kb.Item2] || buildingMatrix[kb.Item1, kb.Item2]) continue;
 
-                        distination = (int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude;
+                        distination = (int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude + (int)toPointFromMatrix(kb.Item1 - startPoint.Item1, kb.Item2 - startPoint.Item2).sqrMagnitude;
 
                         distances.Add(distination);
 
