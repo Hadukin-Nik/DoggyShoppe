@@ -38,7 +38,7 @@ public class ItemHolder : MonoBehaviour
     public bool IsItemPlaceable(ItemsConsts.ItemIndificator toPlace)
     {
         
-        bool e =  (_itemPrefab._itemIndificator == toPlace || _itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) && (_maxCount == 0 || _maxCount > _itemStack.Count);
+        bool e = (_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) || _itemPrefab._itemIndificator == toPlace && _maxCount > _itemStack.Count;
         return e;
     }
 
@@ -108,9 +108,11 @@ public class ItemHolder : MonoBehaviour
         rotation.x += _itemPrefab._gameBody.transform.rotation.x;
         rotation.y += _itemPrefab._gameBody.transform.rotation.y;
         rotation.z += _itemPrefab._gameBody.transform.rotation.z;
-        _itemStack.Push(Instantiate(_itemPrefab._gameBody, new Vector3(x, transform.position.y, z), rotation));
-
-
+        _itemStack.Push(Instantiate(_itemPrefab._gameBody, new Vector3(x, transform.position.y + _itemPrefab._size.y/2, z), rotation));
     }
 
+    public ItemsConsts.ItemIndificator GetItemIndificator()
+    {
+        return _itemPrefab._itemIndificator;
+    }
 }

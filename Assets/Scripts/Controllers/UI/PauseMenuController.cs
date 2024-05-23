@@ -1,13 +1,10 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
 using static MenuStates;
-using System.Diagnostics;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using System.Linq;
 using UnityEngine.Audio;
 
 public class PauseMenuController : MonoBehaviour
@@ -38,12 +35,14 @@ public class PauseMenuController : MonoBehaviour
         model.Close(priceCanvas);
 
         // TODO refactoring
+        int startPrice = 15;
         foreach (ItemsConsts.ItemIndificator item in Enum.GetValues(typeof(ItemsConsts.ItemIndificator)))
         {
-            prices.Add(new ItemPrice(item, 0));
+            prices.Add(new ItemPrice(item, startPrice));
+            startPrice += 5;
         }
         for (int i = 0; i < prices.Count; i++)
-        {
+        {   
             GameObject pricePanel = Instantiate(panelPrefab, panelParent.transform);
             RectTransform panelRectTransform = pricePanel.GetComponent<RectTransform>();
             panelRectTransform.localScale = Vector3.one;
@@ -183,5 +182,19 @@ public class PauseMenuController : MonoBehaviour
     public void SetVolume(float v)
     {
         mixer.SetFloat("Volume", v);
+    }
+
+    public int GetPrice(ItemsConsts.ItemIndificator item)
+    {
+        foreach (ItemPrice itemPrice in prices)
+        {
+            if (itemPrice.item == item)
+            {
+                return itemPrice.price;
+            }
+        }
+
+        Console.Error.WriteLine("Wrong item indifactor in pause menu controller");
+        return 0;
     }
 }

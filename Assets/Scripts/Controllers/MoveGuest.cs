@@ -14,8 +14,10 @@ public class MoveGuest : MonoBehaviour
     private List<Vector3> _moving;
     private Queue<int> _indexes;
     private int _point = 0;
+    private int _cashIndex;
 
     private Action _endOfMove;
+    private Action _eachMove;
     void Start()
     {
         _point = -1;
@@ -30,21 +32,31 @@ public class MoveGuest : MonoBehaviour
         if(_indexes.Count > 0 && _indexes.Peek() <= _point)
         {
             _indexes.Dequeue();
-            _endOfMove();
+            _eachMove();
+
+            if( _indexes.Count <= 0)
+            {
+                gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 255);
+            }
         }
         if(_point < 0 || _moving == null)
         {
             return;
         }
-        if(_point >= _moving.Count - 1)
-        {
 
+        if (_point >= _moving.Count - 1)
+        {
             _point = -1;
             transform.position = _position;
         }
 
         if(_point < _moving.Count - 1 && _waitingMove <= 0f)
         {
+            if (_cashIndex == _point)
+            {
+                gameObject.GetComponent<Renderer>().material.color = new Color(0, 255, 0);
+                _endOfMove();
+            }
 
             _point++;
             _waitingMove = _timeMove;
@@ -55,8 +67,9 @@ public class MoveGuest : MonoBehaviour
         _waitingMove -= Time.deltaTime;
     }
 
-    public void Move(List<Vector3> points, Queue<int> useIndex) {
+    public void Move(List<Vector3> points, Queue<int> useIndex, int cashIndex) {
         _indexes = useIndex;
+        _cashIndex = cashIndex;
         transform.position = _position;
         _moving = points;
         _point = 0;
@@ -70,6 +83,11 @@ public class MoveGuest : MonoBehaviour
     public void SetActionOnEnd(Action action)
     {
         _endOfMove += action;
+    }
+
+    public void SetActionOnEach(Action action)
+    {
+        _eachMove += action;
     }
 
     public void SetHeight(float height)
