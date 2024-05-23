@@ -1,0 +1,114 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8104089598374855209
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6178158960606899873}
+  - component: {fileID: 2914228482429646704}
+  - component: {fileID: 7916365062907155688}
+  - component: {fileID: 6767894200325685200}
+  m_Layer: 0
+  m_Name: MainPoint
+  m_TagString: MainPoint
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6178158960606899873
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104089598374855209}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 4.444796, y: 7.2848043, z: -12.032987}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2914228482429646704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104089598374855209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13145374c70b6834c8f008f308c313d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  items:
+  - _gameBody: {fileID: 880242898202982715, guid: ac5c662a4439adc449aae7db4de776e1, type: 3}
+    _size: {x: 0.25, y: 0.85, z: 0.25}
+    _name: Bone
+    _itemIndificator: 0
+  - _gameBody: {fileID: 7271730919297042516, guid: ea2938e9594e8ca4ab33a85c1fa5c771, type: 3}
+    _size: {x: 1, y: 0.05, z: 1}
+    _name: Meat
+    _itemIndificator: 1
+  - _gameBody: {fileID: 5855835858965502375, guid: de1bccb20e2d3fe4cae19446a8919898, type: 3}
+    _size: {x: 0.125, y: 0.125, z: 0.125}
+    _name: Carrot
+    _itemIndificator: 5
+  - _gameBody: {fileID: 5045948216733254446, guid: 38bc8878e559c224f9ea72907100a3aa, type: 3}
+    _size: {x: 0.25, y: 3, z: 0.25}
+    _name: Sword
+    _itemIndificator: 2
+  - _gameBody: {fileID: 0}
+    _size: {x: 0, y: 0, z: 0}
+    _name: 
+    _itemIndificator: 6
+--- !u!114 &7916365062907155688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104089598374855209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a455ec832f23b354386d35c658484c6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _guest: {fileID: 6247698518289744208, guid: 07fec5a85da301040b82f7b3bbaaacdc, type: 3}
+  _door: {fileID: 0}
+  _spawnPlace: {fileID: 0}
+  _reloadTime: 3
+--- !u!114 &6767894200325685200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8104089598374855209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbcba0dbc9389324899582f4ec13fe39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildings:
+  - _gameBody: {fileID: 8535899298435504759, guid: 8d98e4aab85f42644bfb42591b3e183b, type: 3}
+    _size: {x: 1, y: 0, z: 1}
+    _name: Desk1
+    _buildingIndificator: 0
+  - _gameBody: {fileID: 4390987842710089789, guid: f2f374f7c8e115848a631a70f42e726f, type: 3}
+    _size: {x: 1, y: 0, z: 2}
+    _name: Desk2
+    _buildingIndificator: 1
+  - _gameBody: {fileID: 895979341101850702, guid: a9a2338be750c6d46a6ec0742496f00f, type: 3}
+    _size: {x: 1, y: 0, z: 3}
+    _name: Desk3
+    _buildingIndificator: 2
+  - _gameBody: {fileID: 5716260204191387958, guid: b51e7106d6b3744489561cc55eb4d695, type: 3}
+    _size: {x: 3, y: 1, z: 1}
+    _name: Cash
+    _buildingIndificator: 3

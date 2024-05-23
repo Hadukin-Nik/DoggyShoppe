@@ -38,7 +38,7 @@ public class ItemHolder : MonoBehaviour
     public bool IsItemPlaceable(ItemsConsts.ItemIndificator toPlace)
     {
         
-        bool e =  (_itemPrefab._itemIndificator == toPlace || _itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) && (_maxCount == 0 || _maxCount > _itemStack.Count);
+        bool e = (_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) || _itemPrefab._itemIndificator == toPlace && _maxCount > _itemStack.Count;
         return e;
     }
 
@@ -64,6 +64,10 @@ public class ItemHolder : MonoBehaviour
     }
 
     public void DestroyLastItem() {
+        if(_itemStack.Count == 0)
+        {
+            Console.Error.WriteLine("Guests trying get items, that arent in stock");
+        }
         GameObject item = _itemStack.Pop();
 
         Destroy(item);
@@ -92,15 +96,23 @@ public class ItemHolder : MonoBehaviour
     private void placeItem()
     {
         _free++;
-        float deltaZ = (_itemStack.Count / (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.x;
-        float deltaX = (_itemStack.Count % (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.z;
+        
+        float deltaZ = (_itemStack.Count / (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.z;
+        float deltaX = (_itemStack.Count % (int)(_size.x / _itemPrefab._size.x)) * _itemPrefab._size.x;
 
         Vector3 nv = (_itemPrefab._size.x / 2 + deltaX) * _pivot.right + (_itemPrefab._size.z / 2 + deltaZ) * _pivot.forward;
 
         float x = nv.x + _pivot.position.x;
         float z = nv.z + _pivot.position.z;
-        
-        _itemStack.Push(Instantiate(_itemPrefab._gameBody, new Vector3(x, transform.position.y, z), transform.rotation));
+        Quaternion rotation = transform.rotation;
+        rotation.x += _itemPrefab._gameBody.transform.rotation.x;
+        rotation.y += _itemPrefab._gameBody.transform.rotation.y;
+        rotation.z += _itemPrefab._gameBody.transform.rotation.z;
+        _itemStack.Push(Instantiate(_itemPrefab._gameBody, new Vector3(x, transform.position.y + _itemPrefab._size.y/2, z), rotation));
     }
 
+    public ItemsConsts.ItemIndificator GetItemIndificator()
+    {
+        return _itemPrefab._itemIndificator;
+    }
 }

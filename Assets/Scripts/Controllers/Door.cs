@@ -42,4 +42,9 @@ public class Door : MonoBehaviour
     {
         _onAnimation = true;
     }
+
+    public bool IsOpenning()
+    {
+        return _onAnimation && _IsMovingFwd;
+    }
 }

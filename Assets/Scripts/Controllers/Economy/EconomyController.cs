@@ -3,51 +3,52 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
+[SerializeField]
 public class EconomyController : MonoBehaviour
 {
-    private static EconomyController instance;
-    private EconomyModel model;
+    public BalanceModel model;
+    public Canvas IngameCanvas;
     public TextMeshProUGUI balanceText;
-
-    public static EconomyController Instance
-    {
-        get { return instance; }
-    }
+    [SerializeField]
+    int balance;
+    // Start is called before the first frame update
     private void Awake()
     {
-        //singleton ne obyazatelen
-        if (instance == null)
-        {
-            instance = this;
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-        DontDestroyOnLoad(gameObject);
+        model = new BalanceModel();
 
-        model = new EconomyModel(0);
-        UpdateBalanceDisplay();
     }
-    public void AddMoney(int amount = 100)
+    void Start()
     {
-        model.AddMoney(amount);
-        UpdateBalanceDisplay();
+        model.SetMoney(balance);
+        UpdateUI();
     }
 
-    public void RemoveMoney(int amount = 100)
+    // Update is called once per frame
+    void Update()
     {
-        model.RemoveMoney(amount);
-        UpdateBalanceDisplay();
+        
+        model.SetMoney(balance);
     }
 
-    public void ResetBalance()
+    public void AddMoney(int d)
     {
-        model.ResetBalance();
-        UpdateBalanceDisplay();
+        balance += d;
+        model.AddMoney(d);
+        UpdateUI();
     }
-
-    private void UpdateBalanceDisplay()
+    public void RemoveMoney(int d)
+    {
+        balance -= d;
+        model.RemoveMoney(d);
+        UpdateUI();
+    }
+    public void SetMoney(int d)
+    {
+        balance = d;
+        model.SetMoney(d);
+        UpdateUI();
+    }
+    public void UpdateUI()
     {
         balanceText.text = model.Balance.ToString();
     }

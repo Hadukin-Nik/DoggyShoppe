@@ -37,6 +37,31 @@ public class PathFindingController
         return false;
     }
 
+    private bool isNear((int, int) startPoint, List<(int, int)> points)
+    {
+        List<(int, int)> nearPoint = new List<(int, int)> ();
+        HashSet<(int, int)> pointsCheck = new HashSet<(int, int)>();
+
+        foreach(var point in points)
+        {
+            pointsCheck.Add(point);
+        }
+
+        for (int i = -1; i < 2; i++)
+        {
+            for (int j = -1; j < 2; j++)
+            {
+                (int, int) kb = (i + startPoint.Item1, j + startPoint.Item2);
+                if (isInBounds(kb.Item1, kb.Item2) && pointsCheck.Contains(kb))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public List<Vector3> GetWay(bool[,] buildingMatrix, (int, int) startPoint, List<(int, int)> endPoints)
     { 
         
@@ -85,7 +110,7 @@ public class PathFindingController
                     for (int j = -1; j < 2; j++)
                     {
                         (int, int) kb = (i + point.Item1, j + point.Item2);
-                        if (!isInBounds(kb.Item1, kb.Item2) || isChecked[kb.Item1, kb.Item2] || (buildingMatrix[kb.Item1, kb.Item2] && !inList(kb, endPoints) && !(kb.Item1 == startPoint.Item1 && kb.Item2 == startPoint.Item2))) continue;
+                        if (!isInBounds(kb.Item1, kb.Item2) || isChecked[kb.Item1, kb.Item2] || buildingMatrix[kb.Item1, kb.Item2]) continue;
 
                         distination = (int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude;
 
@@ -100,7 +125,7 @@ public class PathFindingController
 
                         if (parents[kb.Item1, kb.Item2].Item1 == -1 && parents[kb.Item1, kb.Item2].Item2 == -1) parents[kb.Item1, kb.Item2] = point;
 
-                        if (inList(kb, endPoints))
+                        if (isNear(kb, endPoints))
                         {
                             last = kb;
                             isFind = true;
@@ -122,7 +147,7 @@ public class PathFindingController
             }
 
             List<Vector3> ans = new List<Vector3>();
-            while (keyValuePairs.Count > 2)
+            while (keyValuePairs.Count > 1)
             {
                 (int, int) pair = keyValuePairs.Pop();
                 ans.Add(toPointFromMatrix(pair.Item1, pair.Item2) + _pointStart);

@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GuestsFactory : MonoBehaviour
@@ -21,12 +22,20 @@ public class GuestsFactory : MonoBehaviour
 
             GameObject spawnedGuest = Instantiate(_guest);
             spawnedGuest.transform.SetPositionAndRotation(_spawnPlace.position, _spawnPlace.rotation);
-
-            _door.Open();
+            Guest guest = spawnedGuest.GetComponent<Guest>();
+            guest.SetOnCreatedAction(OpenDoor);
         } else
         {
             _standingTime -= Time.deltaTime;
         }
        
+    }
+
+    public void OpenDoor()
+    {
+        if(!_door.IsOpenning())
+        {
+            _door.Open();
+        }
     }
 }
