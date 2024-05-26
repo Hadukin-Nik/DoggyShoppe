@@ -28,9 +28,6 @@ public class Guest : MonoBehaviour
             Debug.Log("Cannot find floor controller on scene");
         }
         _waiting = true;
-        _mover.SetActionOnEach(ReleaseNextItem);
-        _mover.SetActionOnEnd(OnCashAction);
-        _mover.SetHeight(_height);
         _time = _timeWait;
     }
 
@@ -132,6 +129,9 @@ public class Guest : MonoBehaviour
         {
             i.Item1.setFreeItems(i.Item2);
         }
+        _mover.SetHeight(_height);
+        _mover.SetActionOnEach(ReleaseNextItem);
+        _mover.SetActionOnEnd(OnCashAction);
 
         _mover.Move(points, itemHolders, cashIndex);
         _mover.DestroyAction(OnEndAction);

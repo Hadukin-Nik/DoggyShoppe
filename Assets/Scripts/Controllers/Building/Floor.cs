@@ -76,7 +76,10 @@ public class Floor : MonoBehaviour
     {
         return _buildingMatrixController.IsItPossibleToBuild(buildingContoller);
     }
-
+    public bool IsItPossibleToBuild((Vector3, Quaternion) transform, Vector3 size)
+    {
+        return _buildingMatrixController.IsItPossibleToBuild(transform, size);
+    }
     public List<(int, int)> TryToBuild(BuildingContoller buildingContoller)
     {
         List<(int, int)> ans = _buildingMatrixController.TryToBuild(buildingContoller);
@@ -96,6 +99,20 @@ public class Floor : MonoBehaviour
         }
 
         return ans;
+    }
+
+    public List<(int, int)> TryToBuild((Vector3, Quaternion)  buildingContoller, Vector3 size)
+    {
+        List<(int, int)> ans = _buildingMatrixController.TryToBuild(buildingContoller, size);
+
+        return ans;
+    }
+
+    public void ReleaseBuildingPoints(List<(int, int)> points)
+    {
+        if (points == null) return;
+
+        _buildingMatrixController.ReleasePoints(points);
     }
 
     //DebugBuildingLayout methods

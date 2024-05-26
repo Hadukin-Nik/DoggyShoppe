@@ -1,5 +1,3 @@
-using System;
-using Unity.VisualScripting.Antlr3.Runtime.Tree;
 using UnityEngine;
 
 
@@ -8,12 +6,20 @@ public class PlayerObjectMover : MonoBehaviour
     [SerializeField] private Transform _itemPlaceHolder;
     [SerializeField] private Transform _face;
     [SerializeField] private LayerMask _groundMask;
+    [SerializeField] private Vector3 _standartBoxSize = new Vector3(1, 0, 1);
+
 
     [SerializeField] private float _raycastField;
     [SerializeField] private float _raycastDistanceOffset;
 
     private ItemBox _itemInHands;
     private Transform _itemInHandsBody;
+    private Floor _floor;
+
+    private void Start()
+    {
+        _floor = FindAnyObjectByType<Floor>();
+    }
 
     private void Update()
     {
@@ -27,13 +33,18 @@ public class PlayerObjectMover : MonoBehaviour
         Debug.DrawRay(_face.position, fwd, Color.yellow);
         Debug.DrawRay(_face.position + fwd.normalized * _raycastDistanceOffset, fwd, Color.red);
 
-
         if (_itemInHandsBody == null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit,_raycastField) && hit.transform.CompareTag("Item"))
         {
             _itemInHands = hit.transform.GetComponent<ItemBox>();
             _itemInHandsBody = hit.transform;
 
-           hit.transform.GetComponent<BoxCollider>().enabled = false;
+            hit.transform.GetComponent<BoxCollider>().enabled = false;
+
+            if(_itemInHands.GetUsedPoints() != null)
+            {
+                _floor.ReleaseBuildingPoints(_itemInHands.GetUsedPoints());
+                _itemInHands.SetUsedPoints(null);
+            }
         }  else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && hit.transform.CompareTag("ItemHolder"))
         {
             ItemHolder board = hit.transform.GetComponent<ItemHolder>();
@@ -43,13 +54,17 @@ public class PlayerObjectMover : MonoBehaviour
                 board.AddNewItem(_itemInHands.GetItemIndificator());
             }
         }
-        else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask))
+        else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)
+            && _floor.IsItPossibleToBuild((new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z), transform.rotation), _standartBoxSize))
         {
             _itemInHandsBody.position = new Vector3(hit.point.x, hit.point.y + 0.5f, hit.point.z);
 
             _itemInHandsBody.transform.GetComponent<BoxCollider>().enabled = true;
 
             _itemInHands.transform.rotation = transform.rotation;
+
+            _itemInHands.SetUsedPoints(_floor.TryToBuild((_itemInHandsBody.position, transform.rotation), _standartBoxSize));
+
             _itemInHands = null;
             _itemInHandsBody = null;
         }

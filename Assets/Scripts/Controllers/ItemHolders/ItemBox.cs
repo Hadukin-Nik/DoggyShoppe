@@ -8,6 +8,8 @@ public class ItemBox : MonoBehaviour
 
     [SerializeField] private int _countOfItems;
 
+    private List<(int, int)> _usedPoints;
+
     public int CountOfItems()
     {
         return _countOfItems;
@@ -31,5 +33,15 @@ public class ItemBox : MonoBehaviour
     public ItemsConsts.ItemIndificator GetItemIndificator()
     {
         return itemIndificator;
+    }
+
+    public List<(int, int)> GetUsedPoints()
+    {
+        return _usedPoints;
+    }
+
+    public void SetUsedPoints(List<(int, int)> usedPoints)
+    {
+        _usedPoints = usedPoints;
     }
 }

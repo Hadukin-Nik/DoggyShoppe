@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -90,15 +91,20 @@ public class FloorController
 
     public bool IsItPossibleToBuild(BuildingContoller buildingContoller)
     {
-        return isItPossibleToBuild(buildingContoller.GetTransform(), buildingContoller.GetSize(), false).Item1;
+        return isItPossibleToBuild((buildingContoller.GetTransform().position, buildingContoller.GetTransform().rotation), buildingContoller.GetSize(), false).Item1;
+    }
+
+    public bool IsItPossibleToBuild((Vector3, Quaternion) transform, Vector3 size)
+    {
+        return isItPossibleToBuild(transform, size, false).Item1;
     }
 
     public List<(int, int)> TryToBuild(BuildingContoller buildingContoller)
     {
-        return isItPossibleToBuild(buildingContoller.GetTransform(), buildingContoller.GetSize(), true).Item2;
+        return isItPossibleToBuild((buildingContoller.GetTransform().position, buildingContoller.GetTransform().rotation), buildingContoller.GetSize(), true).Item2;
     }
 
-    public List<(int, int)> TryToBuild(Transform transform, Vector3 size)
+    public List<(int, int)> TryToBuild((Vector3, Quaternion) transform, Vector3 size)
     {
         return isItPossibleToBuild(transform, size, true).Item2;
     }
@@ -108,22 +114,25 @@ public class FloorController
         return _buildingMatrix;
     }
 
-    private (bool, List<(int, int)>) isItPossibleToBuild(Transform buildingTransform, Vector3 buildingSize, bool buildImmediately)
+    private (bool, List<(int, int)>) isItPossibleToBuild((Vector3, Quaternion) buildingTransform, Vector3 buildingSize, bool buildImmediately)
     {
         float exp = 0.1f;
         HashSet<(int, int)> pointsOnMatrix = new HashSet<(int, int)>();
 
-        for(int i = 0; i < buildingSize.x / _divisionUnit / exp; i++)
+        Vector3 forwardDirection = buildingTransform.Item2 * Vector3.forward;
+        Vector3 rightDirection = buildingTransform.Item2 * Vector3.right;
+
+        for (int i = 0; i < buildingSize.x / _divisionUnit / exp; i++)
         {
             for(int j = 0; j < buildingSize.z / _divisionUnit / exp; j++)
             {
                 float deltaX = i * _divisionUnit * exp;
                 float deltaZ = j * _divisionUnit * exp;
 
-                Vector3 nv = deltaX * buildingTransform.right + deltaZ * buildingTransform.forward - buildingTransform.right * buildingSize.x / 2 - buildingTransform.forward * buildingSize.z / 2;
+                Vector3 nv = deltaX * rightDirection + deltaZ * forwardDirection - rightDirection * buildingSize.x / 2 - forwardDirection * buildingSize.z / 2;
 
-                float xG = (nv.x + buildingTransform.position.x);
-                float zG = (nv.z + buildingTransform.position.z);
+                float xG = (nv.x + buildingTransform.Item1.x);
+                float zG = (nv.z + buildingTransform.Item1.z);
 
                 float xT = _transformationMatrix[0, 0] * xG + _transformationMatrix[0, 1] * zG + _transformedGlobalPivot[0, 0];
                 float zT = _transformationMatrix[1, 0] * xG + _transformationMatrix[1, 1] * zG + _transformedGlobalPivot[1, 0];
@@ -205,7 +214,11 @@ public class FloorController
         return ans;
     }
 
-
-
-
+    public void ReleasePoints(List<(int, int)> points)
+    {
+        foreach((int, int) point in points)
+        {
+            _buildingMatrix[point.Item1, point.Item2] = false;
+        }
+    }
 }
