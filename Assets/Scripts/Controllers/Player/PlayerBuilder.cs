@@ -118,8 +118,16 @@ public class PlayerBuilder : MonoBehaviour
             buildingContoller.SetData(_building);
         }
 
-        //Open\Close\Create
-        if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
+        //Open\Close\Create\Destroy
+
+        if(Input.GetKeyDown(KeyCode.Z) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && hit.transform.CompareTag("Building")) { 
+            BuildingContoller buildingContollerDelete = hit.transform.GetComponent<BuildingContoller>();
+            _floorController.ReleaseBuildingPoints(buildingContollerDelete.getUsedPoints());
+            buildingContollerDelete.SetUsedPoints(null);
+
+            Destroy(hit.transform.gameObject);
+        }
+        else if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
             _floorController.CreateBuildingMap();
             _building = _buildingsFactory.Get(BuildingIndificator.Desk1);
             buildingGO = Instantiate(_building._gameBody, transform.position, transform.rotation);

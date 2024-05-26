@@ -5,7 +5,9 @@ using UnityEngine;
 public class Guest : MonoBehaviour
 {
     [SerializeField] private float _height;
-    [SerializeField] private float _timeWait;
+    [SerializeField] private int _minMoneyAmount = 0;
+    [SerializeField] private int _maxMoneyAmount = 100;
+
     private PauseMenuController _menuController;
     private EconomyController _priceMenuController;
     private Floor _floorController;
@@ -28,7 +30,6 @@ public class Guest : MonoBehaviour
             Debug.Log("Cannot find floor controller on scene");
         }
         _waiting = true;
-        _time = _timeWait;
     }
 
     // Update is called once per frame
@@ -67,22 +68,27 @@ public class Guest : MonoBehaviour
         int lengthWay = UnityEngine.Random.Range(1, 4);
         _items = new Queue<(ItemHolder, int)>();
 
+        int money = UnityEngine.Random.Range(_minMoneyAmount, _maxMoneyAmount);
+
         for (int l = 0; l < lengthWay; l++)
         {
 
             (List<Vector3>, ItemHolder) points2 = _floorController.GetWayToRandom(point);
             ItemHolder item = points2.Item2;
 
-            if (item == null || item.getFreeItems() == 0 || visited.Contains(item))
+            if (item == null || item.getFreeItems() == 0 || visited.Contains(item) || money < _menuController.GetPrice(item.GetItemIndificator()))
             {
                 continue;
             }
+            int use = UnityEngine.Random.Range(1, Math.Max(1, Math.Min(money / _menuController.GetPrice(item.GetItemIndificator()), item.getFreeItems())));
+
+            money -= use * _menuController.GetPrice(item.GetItemIndificator());
 
             visited.Add(item);
             points.AddRange(points2.Item1);
             point = points[points.Count - 1];
             itemHolders.Enqueue(points.Count - 1);
-            int use = UnityEngine.Random.Range(1, Math.Max(1, Math.Min(item.getFreeItems(), 6)));
+            
             _items.Enqueue((item, use));
             holdersItems.Add((item, item.getFreeItems() - use));
         }

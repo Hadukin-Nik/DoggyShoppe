@@ -83,8 +83,8 @@ public class Floor : MonoBehaviour
     public List<(int, int)> TryToBuild(BuildingContoller buildingContoller)
     {
         List<(int, int)> ans = _buildingMatrixController.TryToBuild(buildingContoller);
-
-        if(ans != null && ans.Count >= 1)
+        buildingContoller.SetUsedPoints(ans);
+        if (ans != null && ans.Count >= 1)
         {
             if(buildingContoller.GetIndificator().Equals(BuildingsConsts.BuildingIndificator.EndPoint))
             {

@@ -5,6 +5,7 @@ public class BuildingContoller : MonoBehaviour
 {
     [SerializeField] private List<ItemHolder> _shelfs;
 
+    private List<(int, int)> _usedPoints;
     private Building _data;
     
 
@@ -28,5 +29,13 @@ public class BuildingContoller : MonoBehaviour
     public List<ItemHolder> GetItemHolders()
     {
         return _shelfs;
+    }
+
+    public void SetUsedPoints(List<(int, int)> usedPoints) { 
+        _usedPoints = usedPoints;
+    }
+    public List<(int, int)> getUsedPoints ()
+    {
+        return _usedPoints;
     }
 }
