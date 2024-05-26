@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 public class Guest : MonoBehaviour
@@ -40,92 +39,108 @@ public class Guest : MonoBehaviour
     {
         if(_time <= 0f && _waiting)
         {
-            _waiting = false;
-            Vector3 point = transform.position;
-
-            List<Vector3> points = new List<Vector3>();
-            Queue<int> itemHolders = new Queue<int>();
-            int cashIndex = 0;
-            List<(ItemHolder, int)> holdersItems = new List<(ItemHolder, int)> ();
-            HashSet<ItemHolder> visited = new HashSet<ItemHolder>();
-            int lengthWay = UnityEngine.Random.Range(1, 4);
-            _items = new Queue<(ItemHolder, int)>();
-            
-            for(int l = 0; l < lengthWay; l++)
+            try
             {
-                
-                (List<Vector3>, ItemHolder) points2 = _floorController.GetWayToRandom(point);
-                ItemHolder item = points2.Item2;
+                bool isCreated = tryCreatePath();
 
-                if (item == null || item.getFreeItems() == 0 || visited.Contains(item))
+                if(!isCreated)
                 {
-                    continue;
-                }
-                
-                visited.Add(item);
-                points.AddRange(points2.Item1);
-                point = points[points.Count - 1];
-                itemHolders.Enqueue(points.Count - 1);
-                int use = UnityEngine.Random.RandomRange(1, Math.Max(1, Math.Min(item.getFreeItems(), 6)));
-                _items.Enqueue((item, use));
-                holdersItems.Add((item, item.getFreeItems() - use));
-            }
-
-            if(_items.Count == 0)
-            {
-                return;
-            }
-
-            for(int i = 0; i < 5; i++)
-            {
-                List<Vector3> points2 = _floorController.GetWayToRandomEndPoint(point);
-
-                if (points2 != null)
-                {
-                    points.AddRange(points2);
-                    point = points[points.Count - 1];
-                    cashIndex = points.Count - 1;
-                    break;
-                }
-
-                if(points2 == null && i == 4)
-                {
-                    return;
+                    OnEndAction();
                 }
             }
-            for (int i = 0; i < 5; i++)
+            catch (Exception e)
             {
-                List<Vector3> points2 = _floorController.GetWayToExitPoint(point);
-
-                if (points2 != null)
-                {
-                    points.AddRange(points2);
-                    point = points[points.Count - 1];
-                    break;
-                }
-
-                if (points2 == null && i == 4)
-                {
-                    return;
-                }
+                OnEndAction();
             }
-            foreach(var i in holdersItems)
-            {
-                i.Item1.setFreeItems(i.Item2);
-            }
-            _mover.Move(points, itemHolders, cashIndex);
-            _onStartAction();
+
         }
-
         _time -= Time.deltaTime;
     }
 
-    private void setEnableToMove()
+    private bool tryCreatePath()
     {
-        if(_timeWait == -1f) { return; }
-        _waiting = true;
-        _time = _timeWait;
+        _waiting = false;
+        Vector3 point = transform.position;
+
+        List<Vector3> points = new List<Vector3>();
+        Queue<int> itemHolders = new Queue<int>();
+        int cashIndex = 0;
+        List<(ItemHolder, int)> holdersItems = new List<(ItemHolder, int)>();
+        HashSet<ItemHolder> visited = new HashSet<ItemHolder>();
+        int lengthWay = UnityEngine.Random.Range(1, 4);
+        _items = new Queue<(ItemHolder, int)>();
+
+        for (int l = 0; l < lengthWay; l++)
+        {
+
+            (List<Vector3>, ItemHolder) points2 = _floorController.GetWayToRandom(point);
+            ItemHolder item = points2.Item2;
+
+            if (item == null || item.getFreeItems() == 0 || visited.Contains(item))
+            {
+                continue;
+            }
+
+            visited.Add(item);
+            points.AddRange(points2.Item1);
+            point = points[points.Count - 1];
+            itemHolders.Enqueue(points.Count - 1);
+            int use = UnityEngine.Random.Range(1, Math.Max(1, Math.Min(item.getFreeItems(), 6)));
+            _items.Enqueue((item, use));
+            holdersItems.Add((item, item.getFreeItems() - use));
+        }
+
+        if (_items.Count == 0)
+        {
+            return false;
+        }
+
+        for (int i = 0; i < 5; i++)
+        {
+            List<Vector3> points2 = _floorController.GetWayToRandomEndPoint(point);
+
+            if (points2 != null)
+            {
+                points.AddRange(points2);
+                point = points[points.Count - 1];
+                cashIndex = points.Count - 1;
+                break;
+            }
+
+            if (points2 == null && i == 4)
+            {
+                return false;
+            }
+        }
+        for (int i = 0; i < 5; i++)
+        {
+            List<Vector3> points2 = _floorController.GetWayToExitPoint(point);
+
+            if (points2 != null)
+            {
+                points.AddRange(points2);
+                point = points[points.Count - 1];
+                break;
+            }
+
+            if (points2 == null && i == 4)
+            {
+                return false;
+            }
+        }
+        foreach (var i in holdersItems)
+        {
+            i.Item1.setFreeItems(i.Item2);
+        }
+
+        _mover.Move(points, itemHolders, cashIndex);
+        _mover.DestroyAction(OnEndAction);
+        _onStartAction();
+
+        return true;
+
     }
+
     public void ReleaseNextItem()
     {
         (ItemHolder, int) k = _items.Dequeue();
@@ -138,7 +153,7 @@ public class Guest : MonoBehaviour
 
     public void OnEndAction()
     {
-        _onStartAction();
+        Destroy(gameObject);
     }
 
     public void OnCashAction()

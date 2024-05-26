@@ -17,6 +17,7 @@ public class MoveGuest : MonoBehaviour
     private int _cashIndex;
 
     private Action _endOfMove;
+    private Action _destroy;
     private Action _eachMove;
     void Start()
     {
@@ -41,6 +42,7 @@ public class MoveGuest : MonoBehaviour
         }
         if(_point < 0 || _moving == null)
         {
+            _destroy();
             return;
         }
 
@@ -90,8 +92,15 @@ public class MoveGuest : MonoBehaviour
         _eachMove += action;
     }
 
+    public void DestroyAction(Action action)
+    {
+        _destroy += action;
+    }
+
     public void SetHeight(float height)
     {
         _height = height;
     }
+
+    
 }

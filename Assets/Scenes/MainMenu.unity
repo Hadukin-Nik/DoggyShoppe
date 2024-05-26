@@ -266,6 +266,7 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 1659d869976946b44a0890dc63416c2c, type: 3}
     volume: 1
     source: {fileID: 0}
+  mixer: {fileID: 0}
 --- !u!1 &674206187
 GameObject:
   m_ObjectHideFlags: 0
@@ -920,7 +921,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: SampleScene 1
+          m_StringArgument: Shop
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &1028903281
