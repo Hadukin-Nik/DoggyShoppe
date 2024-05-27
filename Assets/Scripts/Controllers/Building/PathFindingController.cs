@@ -80,6 +80,7 @@ public class PathFindingController
 
         //init parents, checked points
         (int, int)[,] parents = new (int, int)[_size.Item1, _size.Item2];
+        float[,] pathLength = new float[_size.Item1, _size.Item2];
         bool[,] isChecked = new bool[_size.Item1, _size.Item2];
         for (int i = 0; i < _size.Item1; i++)
         {
@@ -87,10 +88,12 @@ public class PathFindingController
             {
                 parents[i, j] = (-1, -1);
                 isChecked[i, j] = false;
+                pathLength[i, j] = -1;
             }
         }
 
         //init def for while
+        pathLength[startPoint.Item1, startPoint.Item2] = 0;
         (int, int) last = (-1, -1);
         bool isFind = false;
         while (distances.Count > 0 && !isFind)
@@ -104,7 +107,7 @@ public class PathFindingController
 
                 if (isChecked[point.Item1, point.Item2]) continue;
                 isChecked[point.Item1, point.Item2] = true;
-
+                
                 for (int i = -1; i < 2; i++)
                 {
                     for (int j = -1; j < 2; j++)
@@ -112,7 +115,19 @@ public class PathFindingController
                         (int, int) kb = (i + point.Item1, j + point.Item2);
                         if (!isInBounds(kb.Item1, kb.Item2) || isChecked[kb.Item1, kb.Item2] || buildingMatrix[kb.Item1, kb.Item2]) continue;
 
-                        distination = (int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude + (int)toPointFromMatrix(kb.Item1 - startPoint.Item1, kb.Item2 - startPoint.Item2).sqrMagnitude;
+                        if (parents[kb.Item1, kb.Item2].Item1 == -1 && parents[kb.Item1, kb.Item2].Item2 == -1) parents[kb.Item1, kb.Item2] = point;
+                        if (pathLength[kb.Item1, kb.Item2] < 0)
+                        {
+                            if(i * j == 0)
+                            {
+                                pathLength[kb.Item1, kb.Item2] = pathLength[point.Item1, point.Item2] + 1;
+                            } else
+                            {
+                                pathLength[kb.Item1, kb.Item2] = pathLength[point.Item1, point.Item2] + 1.44f;
+                            }
+                        }
+
+                        distination = (int)((int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude + (int)toPointFromMatrix(kb.Item1 - startPoint.Item1, kb.Item2 - startPoint.Item2).sqrMagnitude + pathLength[kb.Item1, kb.Item2]);
 
                         distances.Add(distination);
 
@@ -122,8 +137,6 @@ public class PathFindingController
                         }
 
                         points.GetValueOrDefault(distination).Push(kb);
-
-                        if (parents[kb.Item1, kb.Item2].Item1 == -1 && parents[kb.Item1, kb.Item2].Item2 == -1) parents[kb.Item1, kb.Item2] = point;
 
                         if (isNear(kb, endPoints))
                         {
