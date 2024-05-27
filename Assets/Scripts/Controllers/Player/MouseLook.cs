@@ -15,6 +15,10 @@ public class MouseLook : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.Locked;
         _mouseSensetivitySlider.value = _mouseSensetivity;
+
+        xRotation = 0f;
+
+        _playerFace.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
     }
 
     private void Update()
