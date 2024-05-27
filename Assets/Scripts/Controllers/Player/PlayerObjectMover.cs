@@ -49,9 +49,17 @@ public class PlayerObjectMover : MonoBehaviour
         {
             ItemHolder board = hit.transform.GetComponent<ItemHolder>();
 
-            if(board.IsItemPlaceable(_itemInHands.GetItemIndificator()) && _itemInHands.tryDecreaseAmount())
+            if(board.IsItemPlaceable(_itemInHands.GetItemIndificator(), Mathf.Min(_itemInHands.CountOfItems(), board.FreeSpace())) && _itemInHands.CountOfItems() > 0)
             {
-                board.AddNewItem(_itemInHands.GetItemIndificator());
+                int toAdd = Mathf.Min(_itemInHands.CountOfItems(), board.FreeSpace());
+                board.AddNewItem(_itemInHands.GetItemIndificator(), toAdd);
+                _itemInHands.SetCountOfItems(_itemInHands.CountOfItems() - toAdd);
+
+                if(_itemInHands.CountOfItems() <= 0)
+                {
+                    Destroy(_itemInHands.gameObject);
+                    _itemInHands = null;
+                }
             }
         }
         else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)

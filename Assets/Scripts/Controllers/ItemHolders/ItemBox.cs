@@ -15,6 +15,11 @@ public class ItemBox : MonoBehaviour
         return _countOfItems;
     }
 
+    public void SetCountOfItems(int items)
+    {
+        _countOfItems = items;
+    }
+
     public bool isAnyItemIn()
     {
         return _countOfItems >= 1;

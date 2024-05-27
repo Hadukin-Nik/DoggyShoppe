@@ -35,11 +35,16 @@ public class ItemHolder : MonoBehaviour
     }
 
 
-    public bool IsItemPlaceable(ItemsConsts.ItemIndificator toPlace)
+    public bool IsItemPlaceable(ItemsConsts.ItemIndificator toPlace, int count)
     {
         
-        bool e = (_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) || _itemPrefab._itemIndificator == toPlace && _maxCount > _itemStack.Count;
+        bool e = (_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) || _itemPrefab._itemIndificator == toPlace && _maxCount >= _itemStack.Count + count;
         return e;
+    }
+
+    public int FreeSpace()
+    {
+        return _maxCount - _itemStack.Count;
     }
 
     public int getFreeItems()
@@ -52,7 +57,7 @@ public class ItemHolder : MonoBehaviour
         _free = free;
     }
 
-    public void AddNewItem(ItemsConsts.ItemIndificator toPlace)
+    public void AddNewItem(ItemsConsts.ItemIndificator toPlace, int count)
     {
         if(_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty)
         {
@@ -60,7 +65,10 @@ public class ItemHolder : MonoBehaviour
             _maxCount = (int)(_size.x / _itemPrefab._size.x) * (int)(_size.z / _itemPrefab._size.z);
         } 
 
-        placeItem();
+        for(int i = 0; i < count; i++)
+        {
+            placeItem();
+        }    
     }
 
     public void DestroyLastItem() {
