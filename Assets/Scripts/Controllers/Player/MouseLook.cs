@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class MouseLook : MonoBehaviour
 {
     [SerializeField] private float _mouseSensetivity;
-
+    [SerializeField] private Slider _mouseSensitivitySlider;
     [SerializeField] private Transform _playerBody;
     [SerializeField] private Transform _playerFace;
 
@@ -14,7 +14,7 @@ public class MouseLook : MonoBehaviour
     private void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        _mouseSensetivitySlider.value = _mouseSensetivity;
+        _mouseSensetivity = _mouseSensetivitySlider.value;
 
         xRotation = 0f;
 
