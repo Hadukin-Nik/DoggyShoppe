@@ -80,7 +80,7 @@ public class PathFindingController
 
         //init parents, checked points
         (int, int)[,] parents = new (int, int)[_size.Item1, _size.Item2];
-        float[,] pathLength = new float[_size.Item1, _size.Item2];
+        int[,] pathLength = new int[_size.Item1, _size.Item2];
         bool[,] isChecked = new bool[_size.Item1, _size.Item2];
         for (int i = 0; i < _size.Item1; i++)
         {
@@ -120,14 +120,14 @@ public class PathFindingController
                         {
                             if(i * j == 0)
                             {
-                                pathLength[kb.Item1, kb.Item2] = pathLength[point.Item1, point.Item2] + 1;
+                                pathLength[kb.Item1, kb.Item2] = pathLength[point.Item1, point.Item2] + 2;
                             } else
                             {
-                                pathLength[kb.Item1, kb.Item2] = pathLength[point.Item1, point.Item2] + 1.44f;
+                                pathLength[kb.Item1, kb.Item2] = pathLength[point.Item1, point.Item2] + 3;
                             }
                         }
 
-                        distination = (int)((int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude + (int)toPointFromMatrix(kb.Item1 - startPoint.Item1, kb.Item2 - startPoint.Item2).sqrMagnitude + pathLength[kb.Item1, kb.Item2]);
+                        distination = (int)((int)toPointFromMatrix(kb.Item1 - constPoint.Item1, kb.Item2 - constPoint.Item2).sqrMagnitude * 4 + pathLength[kb.Item1, kb.Item2]);
 
                         distances.Add(distination);
 

@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class MoveGuest : MonoBehaviour
 {
-    [SerializeField] private float _timeMove;
-
+    [SerializeField] private float _speed = 0.1f;
     private Vector3 _position;
 
-    private float _waitingMove = 0f;
     private float _height = 0f;
 
     private List<Vector3> _moving;
@@ -25,6 +23,7 @@ public class MoveGuest : MonoBehaviour
         _position = transform.position;
         _moving = new List<Vector3>();
         _indexes = new Queue<int>();
+
     }
 
     // Update is called once per frame
@@ -49,10 +48,9 @@ public class MoveGuest : MonoBehaviour
         if (_point >= _moving.Count - 1)
         {
             _point = -1;
-            transform.position = _position;
         }
 
-        if(_point < _moving.Count - 1 && _waitingMove <= 0f)
+        if(_point < _moving.Count - 1 && (_moving[_point] - transform.position).sqrMagnitude < 0.001f)
         {
             if (_cashIndex == _point)
             {
@@ -61,18 +59,33 @@ public class MoveGuest : MonoBehaviour
             }
 
             _point++;
-            _waitingMove = _timeMove;
-
-            transform.position = _moving[_point] + Vector3.up * _height / 2;
-           
+            
         }
-        _waitingMove -= Time.deltaTime;
+
+        if(_point >= 0)
+        {
+            Vector3 targetDirection = _moving[_point] - transform.position;
+            
+            Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, _speed, 0.0f);
+
+            transform.rotation = Quaternion.LookRotation(newDirection);
+
+            Vector3 direction = targetDirection.normalized * _speed * Time.deltaTime;
+
+            transform.position = transform.position + direction;
+        }
     }
 
     public void Move(List<Vector3> points, Queue<int> useIndex, int cashIndex) {
+        for (int i = 0; i < points.Count; i++)
+        {
+            points[i].Set(points[i].x, points[i].y + _height, points[i].z);
+        }
+
+        transform.position = new Vector3(points[0].x, points[0].y, points[0].z);
+
         _indexes = useIndex;
         _cashIndex = cashIndex;
-        transform.position = _position;
         _moving = points;
         _point = 0;
     }
