@@ -4,11 +4,11 @@ using UnityEngine.UI;
 public class VolumeController : MonoBehaviour
 {
     public AudioSource source;
-    private Slider slider;
+    public Slider slider;
 
     private void Start()
     {
-        slider = this.GetComponent<Slider>();   
+          
     }
 
     private void Update()
