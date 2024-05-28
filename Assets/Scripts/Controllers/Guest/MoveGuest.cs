@@ -7,7 +7,7 @@ public class MoveGuest : MonoBehaviour
     [SerializeField] private float _speed = 0.1f;
     private Vector3 _position;
 
-    private float _height = 0f;
+    private float _height;
 
     private List<Vector3> _moving;
     private Queue<int> _indexes;
@@ -20,7 +20,7 @@ public class MoveGuest : MonoBehaviour
     void Start()
     {
         _point = -1;
-        _position = transform.position;
+        
         _moving = new List<Vector3>();
         _indexes = new Queue<int>();
 
@@ -79,7 +79,8 @@ public class MoveGuest : MonoBehaviour
     public void Move(List<Vector3> points, Queue<int> useIndex, int cashIndex) {
         for (int i = 0; i < points.Count; i++)
         {
-            points[i].Set(points[i].x, points[i].y + _height, points[i].z);
+            float newY = points[i].y + _height / 2;
+            points[i] = new Vector3(points[i].x, newY, points[i].z);
         }
 
         transform.position = new Vector3(points[0].x, points[0].y, points[0].z);

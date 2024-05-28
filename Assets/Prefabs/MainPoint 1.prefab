@@ -2299,7 +2299,7 @@ Transform:
   m_GameObject: {fileID: 542274944982403613}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 9.81997, y: 4.06, z: -16.301907}
+  m_LocalPosition: {x: 9.82, y: 1.63, z: -22.45}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5246,6 +5246,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 983605187433280142}
+  - component: {fileID: 8494870981082067163}
   - component: {fileID: 7133427529773002317}
   - component: {fileID: 664673253338481190}
   - component: {fileID: 9124323000758086706}
@@ -5272,6 +5273,19 @@ Transform:
   - {fileID: 8668582638098359292}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8494870981082067163
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9047583093969537675}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f08fb91655b0954eaaa169faca2b573, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _boxPrefab: {fileID: 8036434844277918149, guid: 7e7f63e8083c3514c9d937f2cb5c70a7, type: 3}
 --- !u!114 &7133427529773002317
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5301,6 +5315,14 @@ MonoBehaviour:
     _size: {x: 0.25, y: 0.5, z: 0.25}
     _name: Sword
     _itemIndificator: 2
+  - _gameBody: {fileID: 880242898202982715, guid: ac5c662a4439adc449aae7db4de776e1, type: 3}
+    _size: {x: 0.25, y: 0.85, z: 0.25}
+    _name: Bowl
+    _itemIndificator: 3
+  - _gameBody: {fileID: 880242898202982715, guid: ac5c662a4439adc449aae7db4de776e1, type: 3}
+    _size: {x: 0.25, y: 0.85, z: 0.25}
+    _name: Hat
+    _itemIndificator: 4
   - _gameBody: {fileID: 0}
     _size: {x: 0, y: 0, z: 0}
     _name: 
@@ -5349,4 +5371,16 @@ MonoBehaviour:
   - _gameBody: {fileID: 5716260204191387958, guid: b51e7106d6b3744489561cc55eb4d695, type: 3}
     _size: {x: 3, y: 1, z: 1}
     _name: Cash
+    _buildingIndificator: 6
+  - _gameBody: {fileID: 7642234034773154803, guid: 67ffc53c4b17d4345b4f649ebda49c27, type: 3}
+    _size: {x: 1, y: 0.1, z: 1}
+    _name: Storage small
     _buildingIndificator: 3
+  - _gameBody: {fileID: 6560802202625697290, guid: 952c833b46b32a640829b4d79d22b6f8, type: 3}
+    _size: {x: 2, y: 0.1, z: 2}
+    _name: Storage middle
+    _buildingIndificator: 4
+  - _gameBody: {fileID: 3627795300805889281, guid: 09a1ae07a76648943a2c38f239445c60, type: 3}
+    _size: {x: 3, y: 0.1, z: 3}
+    _name: Storage large
+    _buildingIndificator: 5

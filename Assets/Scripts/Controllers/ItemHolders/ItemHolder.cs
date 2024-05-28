@@ -28,6 +28,15 @@ public class ItemHolder : MonoBehaviour
         setPlaceEmpty();
     }
 
+    public void Init()
+    {
+        GameObject mainPoint = GameObject.FindWithTag(_mainPointTag);
+        _factory = mainPoint.GetComponent<ItemFactory>();
+        _itemStack = new Stack<GameObject>();
+
+        setPlaceEmpty();
+    }
+
     private void setPlaceEmpty()
     {
         _itemPrefab = _factory.Get(ItemsConsts.ItemIndificator.Empty);
@@ -38,7 +47,7 @@ public class ItemHolder : MonoBehaviour
     public bool IsItemPlaceable(ItemsConsts.ItemIndificator toPlace, int count)
     {
         
-        bool e = (_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) || _itemPrefab._itemIndificator == toPlace && _maxCount >= _itemStack.Count + count;
+        bool e = (_itemPrefab._itemIndificator == ItemsConsts.ItemIndificator.Empty) || (_itemPrefab._itemIndificator == toPlace && _maxCount >= _itemStack.Count + count);
         return e;
     }
 
