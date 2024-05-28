@@ -5315,8 +5315,8 @@ MonoBehaviour:
     _size: {x: 0.25, y: 0.5, z: 0.25}
     _name: Sword
     _itemIndificator: 2
-  - _gameBody: {fileID: 880242898202982715, guid: ac5c662a4439adc449aae7db4de776e1, type: 3}
-    _size: {x: 0.25, y: 0.85, z: 0.25}
+  - _gameBody: {fileID: 2676279505676058819, guid: 205f1e675ea5aca47baa0b092a306ebe, type: 3}
+    _size: {x: 0.25, y: 0.125, z: 0.25}
     _name: Bowl
     _itemIndificator: 3
   - _gameBody: {fileID: 880242898202982715, guid: ac5c662a4439adc449aae7db4de776e1, type: 3}
