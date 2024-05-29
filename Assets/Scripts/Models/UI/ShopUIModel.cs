@@ -1,8 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using static ItemsConsts;
 
 public class ShopUIModel : BaseUIModel
 {
@@ -12,7 +8,7 @@ public class ShopUIModel : BaseUIModel
     {
         if (panel.Input != -1)
         {
-            _priceMap[panel.Id] = panel.Input;
+            PriceMap[panel.Id] = panel.Input;
         }
         else
         {

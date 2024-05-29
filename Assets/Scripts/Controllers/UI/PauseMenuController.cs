@@ -4,10 +4,7 @@ using System;
 using static MenuStates;
 using static ItemsConsts;
 using TMPro;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using UnityEngine.Audio;
-using static UnityEditor.Progress;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -21,38 +18,66 @@ public class PauseMenuController : MonoBehaviour
     public Canvas ingameCanvas;
     public Canvas orderCanvas;
 
+    ShopUIModel shopModel;
+    MarketUIModel marketModel;
+
     public GameObject shopPanelPrefab;
     public Transform shopPanelParent;
     public GameObject marketPanelPrefab;
     public Transform marketPanelParent;
-    public Dictionary<ItemIndificator, int> shopPriceMap = new Dictionary<ItemIndificator, int>();
+
     public Dictionary<ItemIndificator, int> marketPriceMap = new Dictionary<ItemIndificator, int>();
-    private List<GameObject> shopPanelInstances = new List<GameObject>();
     private List<GameObject> marketPanelInstances = new List<GameObject>();
     private float marketTimer = 0f;
     private float marketInterval = 5f;
     //temp
-    private TextMeshProUGUI itemName;
-    private TextMeshProUGUI itemPrice;
-    private TMP_InputField itemInput;
-    private Button priceButton;
 
     private Action<ItemIndificator, int> _onSpawnBoxRequest;
 
     private void Start()
     {
-        model = new PauseMenuModel();
+        LoadModels();
+        SetupUI();
+        //LoadShopPrices();
+        //LoadMarketPrices();
+        _onSpawnBoxRequest += TestMethod;
+        marketModel.OnItemOrderRequest += ItemOrderRequestCheck;
+    }
+
+    public void ItemOrderRequestCheck(ItemIndificator item, int price, int count)
+    {
+        Debug.Log($"Invoke order request {item} : {price} : {count}");
+        if (_onSpawnBoxRequest != null)
+        {
+
+            if (count > 0 && economyController.HaveEnough(count * price))
+            {
+                _onSpawnBoxRequest(item, count);
+            }
+        }
+        else
+        {
+            Debug.Log("No subscribers for OnSpawnBoxRequest event");
+        }
+    }
+
+    public void LoadModels()
+    {
+        model = new();
+        shopModel = new(shopPanelPrefab, shopPanelParent);
+        marketModel = new(marketPanelPrefab, marketPanelParent);
+    }
+    public void SetupUI()
+    {
         model.Close(pauseCanvas);
         model.Close(settingsCanvas);
         model.Close(priceCanvas);
         model.Close(orderCanvas);
-        LoadShopPrices();
-        LoadMarketPrices();
-        _onSpawnBoxRequest += TestMethod;
     }
+
     void TestMethod(ItemIndificator name, int c)
     {
-        Debug.Log($"Invoke event {name} : {c}");
+        Debug.Log($"Invoke box spawn {name} : {c}");
     }
 
     private void Update()
@@ -101,7 +126,7 @@ public class PauseMenuController : MonoBehaviour
             if(model.state == MenuState.None)
             {
                 PauseGame();
-                UpdatePriceMenu();
+                shopModel.UpdatePrices();
                 OpenMenu(priceCanvas);
                 ChangeState(MenuState.PriceMenu);
             }
@@ -117,7 +142,7 @@ public class PauseMenuController : MonoBehaviour
             if (model.state == MenuState.None)
             {
                 PauseGame();
-                UpdatePriceMenu();
+                marketModel.UpdatePrices();
                 OpenMenu(orderCanvas);
                 ChangeState(MenuState.OrderMenu);
             }
@@ -167,34 +192,7 @@ public class PauseMenuController : MonoBehaviour
         }
     }
     #endregion
-    //test
-    public void UpdatePriceMenu()
-    {
-        foreach (var item in shopPriceMap)
-        {
-            shopPanelInstances[(int)item.Key].transform.Find("ItemPrice").GetComponent<TextMeshProUGUI>().text = item.Value.ToString();
-        }
-    }
-    public void ChangePrice()
-    {
-        /*ItemPrice ip = prices.First(ip => ip.item == (ItemsConsts.ItemIndificator)Enum.Parse(typeof(ItemsConsts.ItemIndificator), name, true));
-        UnityEngine.Debug.Log($"{name} : {price}");
-        ip.price = Int32.Parse(price);*/
-        Button button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-        Transform pricePanel = button.transform.parent;
-        itemName = pricePanel.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-        itemInput = pricePanel.transform.Find("ItemPriceInput").GetComponent<TMP_InputField>();
-        int price = GetInput(itemInput);
-        if (price != -1)
-        {
-            shopPriceMap[(ItemIndificator)Enum.Parse(typeof(ItemIndificator), itemName.text, true)] = GetInput(itemInput);
-        }
-    }
 
-    public void UpdateGameUI()
-    {
-
-    }
     public void SetVolume(float v)
     {
         mixer.SetFloat("Volume", v);
@@ -202,95 +200,7 @@ public class PauseMenuController : MonoBehaviour
 
     public int GetPrice(ItemIndificator item)
     {
-        return marketPriceMap[item];
-    }
-
-    void TriggerSpawnBoxEvent()
-    {
-        if (_onSpawnBoxRequest != null)
-        {
-            Button button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
-            Transform pricePanel = button.transform.parent;
-            itemName = pricePanel.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-            itemInput = pricePanel.transform.Find("ItemPriceInput").GetComponent<TMP_InputField>();
-            ItemIndificator item = (ItemIndificator)Enum.Parse(typeof(ItemIndificator), itemName.text, true);
-            int count = GetInput(itemInput);
-            if(count > 0 && economyController.HaveEnough(count * GetPrice(item)))
-            {
-                _onSpawnBoxRequest(item, count);
-            }
-        }
-        else
-        {
-            Debug.Log("No subscribers for OnSpawnBoxRequest event");
-        }
-    }
-    void LoadShopPrices()
-    {
-        int startPrice = 10;
-        foreach (ItemIndificator item in Enum.GetValues(typeof(ItemIndificator)))
-        {
-            shopPriceMap.Add(item, startPrice);
-            startPrice += 5;
-        }
-        foreach (var item in shopPriceMap)
-        {
-            GameObject pricePanel = Instantiate(shopPanelPrefab, shopPanelParent.transform);
-            Debug.Log("Created panel");
-            RectTransform panelRectTransform = pricePanel.GetComponent<RectTransform>();
-            panelRectTransform.localScale = Vector3.one;
-
-            shopPanelInstances.Add(pricePanel);
-
-            itemName = pricePanel.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-            itemPrice = pricePanel.transform.Find("ItemPrice").GetComponent<TextMeshProUGUI>();
-            itemInput = pricePanel.transform.Find("ItemPriceInput").GetComponent<TMP_InputField>();
-            priceButton = pricePanel.transform.Find("ChangePriceBtn").GetComponent<Button>();
-            priceButton.onClick.AddListener(() => ChangePrice());
-            priceButton.onClick.AddListener(() => UpdatePriceMenu());
-            itemName.text = item.Key.ToString();
-            itemPrice.text = item.Value.ToString();
-        }
-    }
-    void LoadMarketPrices()
-    {
-        int startPrice = 0;
-        foreach (ItemIndificator item in Enum.GetValues(typeof(ItemIndificator)))
-        {
-            marketPriceMap.Add(item, startPrice);
-            startPrice += 5;
-        }
-        foreach (var item in marketPriceMap)
-        {
-            GameObject pricePanel = Instantiate(marketPanelPrefab, marketPanelParent.transform);
-            RectTransform panelRectTransform = pricePanel.GetComponent<RectTransform>();
-            panelRectTransform.localScale = Vector3.one;
-
-            marketPanelInstances.Add(pricePanel);
-
-            itemName = pricePanel.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
-            itemPrice = pricePanel.transform.Find("ItemPrice").GetComponent<TextMeshProUGUI>();
-            itemInput = pricePanel.transform.Find("ItemPriceInput").GetComponent<TMP_InputField>();
-            priceButton = pricePanel.transform.Find("ChangePriceBtn").GetComponent<Button>();
-            priceButton.onClick.AddListener(() => TriggerSpawnBoxEvent());
-            itemName.text = item.Key.ToString();
-            itemPrice.text = item.Value.ToString();
-        }
-    }
-    int GetInput(TMP_InputField inputField)
-    {
-        int r;
-        try
-        {
-            r = Int32.Parse(inputField.text);
-            inputField.image.color = Color.white;
-        }
-        catch
-        {
-            inputField.image.color = Color.red;
-            return -1;
-        }
-        return r >= 0 ? r : -1;
+        return marketModel.PriceMap[item];
     }
 
     public void UpdateMarketMenu()
@@ -304,21 +214,21 @@ public class PauseMenuController : MonoBehaviour
     {
         Dictionary<ItemIndificator, int> updates = new Dictionary<ItemIndificator, int>();
 
-        foreach (var item in marketPriceMap)
+        foreach (var item in marketModel.PanelInstances)
         {
-            if (item.Value >= 10)
+            if (item.Price >= 10)
             {
-                updates[item.Key] = item.Value + UnityEngine.Random.Range(-5, 5);
+                updates[item.Id] = item.Price + UnityEngine.Random.Range(-5, 5);
             }
             else
             {
-                updates[item.Key] = item.Value + UnityEngine.Random.Range(0, 5);
+                updates[item.Id] = item.Price + UnityEngine.Random.Range(0, 5);
             }
         }
 
         foreach (var update in updates)
         {
-            marketPriceMap[update.Key] = update.Value;
+            marketModel.PriceMap[update.Key] = update.Value;
         }
         Debug.Log("Randomize market prices");
     }

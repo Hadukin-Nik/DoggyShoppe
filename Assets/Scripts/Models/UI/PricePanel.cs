@@ -13,7 +13,6 @@ public class PricePanel
     private readonly TextMeshProUGUI _price;
     private readonly TMP_InputField _input;
     private readonly Button _button;
-    private readonly ItemIndificator _id;
 
     public GameObject Panel
     {
@@ -90,16 +89,16 @@ public class PricePanel
     {
         get
         {
-            return _id;
+            return (ItemIndificator)Enum.Parse(typeof(ItemIndificator), _name.text, true);
         }
     }
     public PricePanel(GameObject panel)
     {
+        Debug.Log("Initialisation");
         _panel = panel;
         _name = panel.transform.Find("ItemName").GetComponent<TextMeshProUGUI>();
         _price = panel.transform.Find("ItemPrice").GetComponent<TextMeshProUGUI>();
         _input = panel.transform.Find("ItemPriceInput").GetComponent<TMP_InputField>();
         _button = panel.transform.Find("ChangePriceBtn").GetComponent<Button>();
-        _id = (ItemIndificator)Enum.Parse(typeof(ItemIndificator), _name.text, true);
     }
 }

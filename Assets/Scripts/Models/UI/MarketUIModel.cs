@@ -1,18 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
+using static ItemsConsts;
 
-public class NewBehaviourScript : MonoBehaviour
+public class MarketUIModel : BaseUIModel
 {
-    // Start is called before the first frame update
-    void Start()
+    private event Action<ItemIndificator, int, int> _onItemOrderRequest;
+
+    public event Action<ItemIndificator, int, int> OnItemOrderRequest
     {
-        
+        add
+        {
+            _onItemOrderRequest += value;
+        }
+        remove
+        {
+            _onItemOrderRequest -= value;
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public MarketUIModel(GameObject prefab, Transform parent) : base(prefab, parent)
     {
-        
+
+    }
+    public override void ButtonClick(PricePanel p)
+    {
+        _onItemOrderRequest?.Invoke(p.Id, p.Price, p.Input);
     }
 }
