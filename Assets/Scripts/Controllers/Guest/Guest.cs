@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Guest : MonoBehaviour
 {
-    [SerializeField] private float _height;
+    [SerializeField] private float _height = 1f;
     [SerializeField] private int _minMoneyAmount = 0;
     [SerializeField] private int _maxMoneyAmount = 100;
 

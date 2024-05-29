@@ -44,6 +44,10 @@ public class PlayerObjectMover : MonoBehaviour
             {
                 _floor.ReleaseBuildingPoints(_itemInHands.GetUsedPoints());
                 _itemInHands.SetUsedPoints(null);
+            } else if (_itemInHands.getBoxStorage() != null)
+            {
+                _itemInHands.getBoxStorage().Displace(_itemInHands.WherePlaced());
+                _itemInHands.SetStorage(null);
             }
         }  else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && hit.transform.CompareTag("ItemHolder"))
         {
@@ -60,6 +64,23 @@ public class PlayerObjectMover : MonoBehaviour
                     Destroy(_itemInHands.gameObject);
                     _itemInHands = null;
                 }
+            }
+        } else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && hit.transform.CompareTag("Storage"))
+        {
+            BoxStorage storage = hit.transform.GetComponent<BoxStorage>();
+
+            if(storage.IsPlaceable())
+            {
+                (Vector3, Quaternion, (int, int)) newTransform = storage.Place();
+
+                _itemInHands.SetStorage(storage);
+                _itemInHands.SetWherePlaced(newTransform.Item3);
+                _itemInHands.transform.position = newTransform.Item1;
+                _itemInHands.transform.rotation = newTransform.Item2;
+                _itemInHandsBody.transform.GetComponent<BoxCollider>().enabled = true;
+
+                _itemInHands = null;
+                _itemInHandsBody = null;
             }
         }
         else if (_itemInHandsBody != null && Input.GetKeyDown(KeyCode.E) && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)

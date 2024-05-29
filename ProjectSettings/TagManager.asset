@@ -8,6 +8,7 @@ TagManager:
   - ItemHolder
   - MainPoint
   - Building
+  - Storage
   layers:
   - Default
   - TransparentFX

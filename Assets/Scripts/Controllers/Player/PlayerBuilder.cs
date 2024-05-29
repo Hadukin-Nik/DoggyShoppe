@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using static BuildingsConsts;
 
@@ -13,7 +14,7 @@ public class PlayerBuilder : MonoBehaviour
     [SerializeField] private float _rotationSpeed;
 
     private Floor _floorController;
-
+    private OrdersController _storageController; 
     private GameObject buildingGO = null;
 
     private Building _building;
@@ -24,6 +25,7 @@ public class PlayerBuilder : MonoBehaviour
     private void Start()
     {
         _floorController = FindObjectOfType<Floor>();
+        _storageController = FindObjectOfType<OrdersController>();
     }
 
 
@@ -120,11 +122,16 @@ public class PlayerBuilder : MonoBehaviour
 
         //Open\Close\Create\Destroy
 
-        if(Input.GetKeyDown(KeyCode.Z) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && hit.transform.CompareTag("Building")) { 
+        if (Input.GetKeyDown(KeyCode.Z) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && (hit.transform.CompareTag("Building") || hit.transform.CompareTag("Storage"))) { 
+
             BuildingContoller buildingContollerDelete = hit.transform.GetComponent<BuildingContoller>();
             _floorController.ReleaseBuildingPoints(buildingContollerDelete.getUsedPoints());
             buildingContollerDelete.SetUsedPoints(null);
 
+            if (_building._gameBody.tag.Equals("Storage"))
+            {
+                _storageController.DeleteStorage(hit.transform.GetComponent<BoxStorage>());
+            }
             Destroy(hit.transform.gameObject);
         }
         else if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
@@ -140,9 +147,23 @@ public class PlayerBuilder : MonoBehaviour
             buildingGO.GetComponentInChildren<BoxCollider>().isTrigger = false;
             _floorController.TryToBuild(buildingContoller);
             _floorController.DestroyBuildingMap();
+
+            if(_building._gameBody.tag.Equals("Storage"))
+            {
+                buildingGO.GetComponent<BoxStorage>().Init();
+                _storageController.AddStorage(buildingGO.GetComponent<BoxStorage>());
+            } else
+            {
+                List<ItemHolder> itemHolders = buildingGO.GetComponent<BuildingContoller>().GetItemHolders();
+
+                foreach(ItemHolder itemHolder in itemHolders)
+                {
+                    itemHolder.Init();
+                }
+            }
+
             _building = null;
             _isBuilding = false;
-
         } else if (_isBuilding && Input.GetKeyDown(KeyCode.Escape)) {
             _floorController.DestroyBuildingMap();
 
