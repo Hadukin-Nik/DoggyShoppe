@@ -89,7 +89,8 @@ public class Floor : MonoBehaviour
             if(buildingContoller.GetIndificator().Equals(BuildingsConsts.BuildingIndificator.EndPoint))
             {
                 _endPoints.Add(ans);
-            } else {
+            } 
+            else {
                 foreach (ItemHolder itemHolder in buildingContoller.GetItemHolders())
                 {
                     itemHolder.setPoints(ans);

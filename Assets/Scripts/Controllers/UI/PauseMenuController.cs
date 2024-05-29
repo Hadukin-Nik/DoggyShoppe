@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Audio;
+using static UnityEditor.Progress;
 
 public class PauseMenuController : MonoBehaviour
 {
@@ -36,7 +37,7 @@ public class PauseMenuController : MonoBehaviour
     private TMP_InputField itemInput;
     private Button priceButton;
 
-    public static event Action<ItemIndificator, int> OnSpawnBoxRequest;
+    private Action<ItemIndificator, int> _onSpawnBoxRequest;
 
     private void Start()
     {
@@ -47,7 +48,7 @@ public class PauseMenuController : MonoBehaviour
         model.Close(orderCanvas);
         LoadShopPrices();
         LoadMarketPrices();
-        OnSpawnBoxRequest += TestMethod;
+        _onSpawnBoxRequest += TestMethod;
     }
     void TestMethod(ItemIndificator name, int c)
     {
@@ -206,7 +207,7 @@ public class PauseMenuController : MonoBehaviour
 
     void TriggerSpawnBoxEvent()
     {
-        if (OnSpawnBoxRequest != null)
+        if (_onSpawnBoxRequest != null)
         {
             Button button = EventSystem.current.currentSelectedGameObject.GetComponent<Button>();
             Transform pricePanel = button.transform.parent;
@@ -214,9 +215,9 @@ public class PauseMenuController : MonoBehaviour
             itemInput = pricePanel.transform.Find("ItemPriceInput").GetComponent<TMP_InputField>();
             ItemIndificator item = (ItemIndificator)Enum.Parse(typeof(ItemIndificator), itemName.text, true);
             int count = GetInput(itemInput);
-            if(count > 0)
+            if(count > 0 && economyController.HaveEnough(count * GetPrice(item)))
             {
-                OnSpawnBoxRequest(item, count);
+                _onSpawnBoxRequest(item, count);
             }
         }
         else
@@ -331,5 +332,15 @@ public class PauseMenuController : MonoBehaviour
             UpdateMarketMenu();
             marketTimer = 0f;
         }
+    }
+
+    public void AddActionOnOrderEvent(Action<ItemIndificator, int> action)
+    {
+        _onSpawnBoxRequest += action;
+    }
+
+    public void DeleteMoneyAction(ItemIndificator itemIndificator, int count)
+    {
+        economyController.RemoveMoney(count * GetPrice(itemIndificator));
     }
 }

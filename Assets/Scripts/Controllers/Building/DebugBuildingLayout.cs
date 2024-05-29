@@ -66,7 +66,7 @@ public class DebugBuildingLayout : MonoBehaviour
     {
         Vector3 x = (j + 0.5f) * _correctForwardVector;
         Vector3 z = (i + 0.5f) * _correctRightVector;
-        Vector3 y = _pointStart.up * yd * 0.5f;
+        Vector3 y = _pointStart.up * yd * 0.01f;
         _stack.Push(Instantiate(gameObject, x + z + y + _pointStart.position, _pointStart.rotation));
     }
 }

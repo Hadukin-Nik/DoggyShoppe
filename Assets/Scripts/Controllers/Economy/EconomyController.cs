@@ -46,6 +46,11 @@ public class EconomyController : MonoBehaviour
         model.SetMoney(d);
         UpdateUI();
     }
+
+    public bool HaveEnough(int money)
+    {
+        return balance >= money;
+    }
     public void UpdateUI()
     {
         balanceText.text = model.Balance.ToString();
