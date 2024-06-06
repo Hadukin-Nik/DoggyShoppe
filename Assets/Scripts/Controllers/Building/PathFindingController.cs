@@ -160,7 +160,7 @@ public class PathFindingController
             }
 
             List<Vector3> ans = new List<Vector3>();
-            while (keyValuePairs.Count > 1)
+            while (keyValuePairs.Count > 0)
             {
                 (int, int) pair = keyValuePairs.Pop();
                 ans.Add(toPointFromMatrix(pair.Item1, pair.Item2) + _pointStart);

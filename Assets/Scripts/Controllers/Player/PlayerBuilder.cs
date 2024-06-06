@@ -23,7 +23,7 @@ public class PlayerBuilder : MonoBehaviour
     private float _wheel;
     private BuildingIndificator _buildingIndificator;
 
-    private static event Action<BuildingIndificator> onBuildingIdChange;
+    private static event Action<String> onBuildingIdChange;
     private static event Action<bool> onBuildingRequest;
     public static event Action<bool> OnBuildingRequest
     {
@@ -36,7 +36,7 @@ public class PlayerBuilder : MonoBehaviour
             onBuildingRequest -= value;
         }
     }
-    public static event Action<BuildingIndificator> OnBuildingIdChange
+    public static event Action<String> OnBuildingIdChange
     {
         add
         {
@@ -91,7 +91,6 @@ public class PlayerBuilder : MonoBehaviour
             }
 
             _building = _buildingsFactory.Get(_buildingIndificator);
-            onBuildingIdChange?.Invoke(_buildingIndificator);
 
             while(_building == null)
             {
@@ -105,6 +104,7 @@ public class PlayerBuilder : MonoBehaviour
                 }
                 _building = _buildingsFactory.Get(_buildingIndificator);
             }
+            onBuildingIdChange?.Invoke(_building.getName());
 
             buildingGO = Instantiate(_building._gameBody);
         } else if (_isBuilding && _wheel > 1f)
@@ -124,7 +124,6 @@ public class PlayerBuilder : MonoBehaviour
             }
 
             _building = _buildingsFactory.Get(_buildingIndificator);
-            onBuildingIdChange?.Invoke(_buildingIndificator);
 
             while (_building == null)
             {
@@ -139,6 +138,7 @@ public class PlayerBuilder : MonoBehaviour
 
                 _building = _buildingsFactory.Get(_buildingIndificator);
             }
+            onBuildingIdChange?.Invoke(_building.getName());
 
             buildingGO = Instantiate(_building._gameBody);
         }
@@ -173,7 +173,7 @@ public class PlayerBuilder : MonoBehaviour
         else if (_building == null && Input.GetKeyDown(KeyCode.B) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
             _floorController.CreateBuildingMap();
             _building = _buildingsFactory.Get(BuildingIndificator.Desk1);
-            onBuildingIdChange?.Invoke(_buildingIndificator);
+            onBuildingIdChange?.Invoke(_building.getName());
             buildingGO = Instantiate(_building._gameBody, transform.position, transform.rotation);
 
             _buildingIndificator = BuildingIndificator.Desk1;

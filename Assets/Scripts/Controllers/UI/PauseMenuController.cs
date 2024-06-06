@@ -40,7 +40,7 @@ public class PauseMenuController : MonoBehaviour
 
     private Action<ItemIndificator, int> _onSpawnBoxRequest;
 
-    private Action<BuildingIndificator> _onBuildingIdChange;
+    private Action<String> _onBuildingIdChange;
 
     private void Start()
     {
@@ -90,10 +90,9 @@ public class PauseMenuController : MonoBehaviour
     {
         Debug.Log($"Invoke box spawn {name} : {c}");
     }
-    void UpdateBuildingText(BuildingIndificator id)
+    void UpdateBuildingText(String name)
     {
-        buildingId = id;
-        buildingText.text = id.ToString();
+        buildingText.text = name;
     }
     void ToggleBuildingMenu(bool b)
     {
