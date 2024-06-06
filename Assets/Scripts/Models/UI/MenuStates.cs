@@ -6,6 +6,7 @@ public static class MenuStates
         PauseMenu = 1,
         SettingsMenu = 2,
         PriceMenu = 3,
-        OrderMenu = 4
+        OrderMenu = 4,
+        BuildingMenu = 5
     };
 }

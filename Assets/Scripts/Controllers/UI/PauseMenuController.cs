@@ -3,6 +3,7 @@ using UnityEngine;
 using System;
 using static MenuStates;
 using static ItemsConsts;
+using static BuildingsConsts;
 using TMPro;
 using UnityEngine.Audio;
 
@@ -11,12 +12,17 @@ public class PauseMenuController : MonoBehaviour
     public AudioMixer mixer;
     public EconomyController economyController;
     public TextMeshProUGUI balanceText;
+    public TextMeshProUGUI buildingText;
     private PauseMenuModel model;
     public Canvas pauseCanvas;
     public Canvas settingsCanvas;
     public Canvas priceCanvas;
     public Canvas ingameCanvas;
     public Canvas orderCanvas;
+    public Canvas buildingCanvas;
+    public BuildingIndificator buildingId = 0;
+
+    private float scrollInput;
 
     ShopUIModel shopModel;
     MarketUIModel marketModel;
@@ -34,6 +40,8 @@ public class PauseMenuController : MonoBehaviour
 
     private Action<ItemIndificator, int> _onSpawnBoxRequest;
 
+    private Action<BuildingIndificator> _onBuildingIdChange;
+
     private void Start()
     {
         LoadModels();
@@ -42,6 +50,8 @@ public class PauseMenuController : MonoBehaviour
         //LoadMarketPrices();
         _onSpawnBoxRequest += TestMethod;
         marketModel.OnItemOrderRequest += ItemOrderRequestCheck;
+        PlayerBuilder.OnBuildingRequest += ToggleBuildingMenu;
+        PlayerBuilder.OnBuildingIdChange += UpdateBuildingText;
     }
 
     public void ItemOrderRequestCheck(ItemIndificator item, int price, int count)
@@ -73,13 +83,31 @@ public class PauseMenuController : MonoBehaviour
         model.Close(settingsCanvas);
         model.Close(priceCanvas);
         model.Close(orderCanvas);
+        model.Close(buildingCanvas);
     }
 
     void TestMethod(ItemIndificator name, int c)
     {
         Debug.Log($"Invoke box spawn {name} : {c}");
     }
-
+    void UpdateBuildingText(BuildingIndificator id)
+    {
+        buildingId = id;
+        buildingText.text = id.ToString();
+    }
+    void ToggleBuildingMenu(bool b)
+    {
+        if (model.state == MenuState.None)
+        {
+            OpenMenu(buildingCanvas);
+            ChangeState(MenuState.BuildingMenu);
+        }
+        else if (model.state == MenuState.BuildingMenu)
+        {
+            CloseMenu(buildingCanvas);
+            ChangeState(MenuState.None);
+        }
+    }
     private void Update()
     {
         MarketTimerTick();
@@ -115,13 +143,15 @@ public class PauseMenuController : MonoBehaviour
                         ChangeState(MenuState.None);
                         break;
                     }
-            }
-            if(model.state == MenuState.PriceMenu)
-            {
-
+                case MenuState.BuildingMenu:
+                    {
+                        CloseMenu(buildingCanvas);
+                        ChangeState(MenuState.None);
+                        break;
+                    }
             }
         }
-        if(Input.GetKeyDown(KeyCode.B))
+        if(Input.GetKeyDown(KeyCode.Tab))
         {
             if(model.state == MenuState.None)
             {
@@ -137,7 +167,20 @@ public class PauseMenuController : MonoBehaviour
                 ChangeState(MenuState.None);
             }
         }
-        if(Input.GetKeyDown(KeyCode.N))
+        /*if(Input.GetKeyDown(KeyCode.Q))
+        {
+            if(model.state == MenuState.None)
+            {
+                OpenMenu(buildingCanvas);
+                ChangeState(MenuState.BuildingMenu);
+            }
+            else if(model.state == MenuState.BuildingMenu)
+            {
+                CloseMenu(buildingCanvas);
+                ChangeState(MenuState.None);
+            }
+        }*/
+        if(Input.GetKeyDown(KeyCode.T))
         {
             if (model.state == MenuState.None)
             {
@@ -155,6 +198,7 @@ public class PauseMenuController : MonoBehaviour
         }
     }
     #region UI
+    
     public void PauseGame()
     {
         model.Pause();

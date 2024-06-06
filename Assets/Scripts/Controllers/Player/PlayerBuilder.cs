@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using static BuildingsConsts;
+using static ItemsConsts;
 
 public class PlayerBuilder : MonoBehaviour
 {
@@ -21,6 +22,32 @@ public class PlayerBuilder : MonoBehaviour
     private bool _isBuilding;
 
     private BuildingIndificator _buildingIndificator;
+
+    private static event Action<BuildingIndificator> onBuildingIdChange;
+    private static event Action<bool> onBuildingRequest;
+    public static event Action<bool> OnBuildingRequest
+    {
+        add
+        {
+            onBuildingRequest += value;
+        }
+        remove
+        {
+            onBuildingRequest -= value;
+        }
+    }
+    public static event Action<BuildingIndificator> OnBuildingIdChange
+    {
+        add
+        {
+            onBuildingIdChange += value;
+        }
+        remove
+        {
+            onBuildingIdChange -= value;
+        }
+    }
+
 
     private void Start()
     {
@@ -57,6 +84,7 @@ public class PlayerBuilder : MonoBehaviour
             }
 
             _building = _buildingsFactory.Get(_buildingIndificator);
+            onBuildingIdChange?.Invoke(_buildingIndificator);
 
             while(_building == null)
             {
@@ -88,8 +116,9 @@ public class PlayerBuilder : MonoBehaviour
             }
 
             _building = _buildingsFactory.Get(_buildingIndificator);
+            onBuildingIdChange?.Invoke(_buildingIndificator);
 
-            while(_building == null)
+            while (_building == null)
             {
                 if ((int)_buildingIndificator - 1 < 0)
                 {
@@ -122,7 +151,7 @@ public class PlayerBuilder : MonoBehaviour
 
         //Open\Close\Create\Destroy
 
-        if (Input.GetKeyDown(KeyCode.Z) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && (hit.transform.CompareTag("Building") || hit.transform.CompareTag("Storage"))) { 
+        if (Input.GetKeyDown(KeyCode.Z) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && (hit.transform.CompareTag("Building") || hit.transform.CompareTag("Storage"))) {
 
             BuildingContoller buildingContollerDelete = hit.transform.GetComponent<BuildingContoller>();
             _floorController.ReleaseBuildingPoints(buildingContollerDelete.getUsedPoints());
@@ -134,16 +163,19 @@ public class PlayerBuilder : MonoBehaviour
             }
             Destroy(hit.transform.gameObject);
         }
-        else if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
+        else if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask) && Cursor.lockState == CursorLockMode.Locked) {
+            onBuildingRequest?.Invoke(true);
             _floorController.CreateBuildingMap();
             _building = _buildingsFactory.Get(BuildingIndificator.Desk1);
+            onBuildingIdChange?.Invoke(_buildingIndificator);
             buildingGO = Instantiate(_building._gameBody, transform.position, transform.rotation);
 
             _buildingIndificator = BuildingIndificator.Desk1;
             _isBuilding = true;
         }
-        else if (_isBuilding && Input.GetKeyDown(KeyCode.Q) 
+        else if (_isBuilding && Input.GetKeyDown(KeyCode.Q)
             && _floorController.IsItPossibleToBuild(buildingContoller)){
+            onBuildingRequest?.Invoke(false);
             buildingGO.GetComponentInChildren<BoxCollider>().isTrigger = false;
             _floorController.TryToBuild(buildingContoller);
             _floorController.DestroyBuildingMap();
