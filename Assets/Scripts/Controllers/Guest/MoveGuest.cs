@@ -8,36 +8,57 @@ public class MoveGuest : MonoBehaviour
     private Vector3 _position;
 
     private float _height;
+    private float _waiting;
 
     private List<Vector3> _moving;
     private Queue<int> _indexes;
     private int _point = 0;
     private int _cashIndex;
+    
+    private Animator _animator;
 
     private Action _endOfMove;
     private Action _destroy;
     private Action _eachMove;
     void Start()
     {
+        _waiting = -1;
         _point = -1;
         
         _moving = new List<Vector3>();
         _indexes = new Queue<int>();
+
+        _animator = GetComponent<Animator>();
 
     }
 
     // Update is called once per frame
     void Update()
     {
+        if(_waiting > 0.01)
+        {
+            _waiting -= Time.deltaTime;
+        } else
+        {
+            _waiting = -1;
+        }
+        
+
+        if( _waiting > 0)
+        {
+            return;
+        }
+
         if(_indexes.Count > 0 && _indexes.Peek() <= _point)
         {
+            _animator.SetFloat("Speed", 0f);
+
+            _animator.SetTrigger("Picking");
+            _waiting = 3.4f;
             _indexes.Dequeue();
             _eachMove();
 
-            if( _indexes.Count <= 0)
-            {
-                gameObject.GetComponent<Renderer>().material.color = new Color(0, 0, 255);
-            }
+            return;
         }
         if(_point < 0 || _moving == null)
         {
@@ -54,7 +75,6 @@ public class MoveGuest : MonoBehaviour
         {
             if (_cashIndex == _point)
             {
-                gameObject.GetComponent<Renderer>().material.color = new Color(0, 255, 0);
                 _endOfMove();
             }
 
@@ -69,7 +89,7 @@ public class MoveGuest : MonoBehaviour
             Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, _speed, 0.0f);
 
             transform.rotation = Quaternion.LookRotation(newDirection);
-
+            _animator.SetFloat("Speed", 1f);
             Vector3 direction = targetDirection.normalized * _speed * Time.deltaTime;
 
             transform.position = transform.position + direction;
