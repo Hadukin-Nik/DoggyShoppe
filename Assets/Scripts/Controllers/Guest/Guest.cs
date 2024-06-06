@@ -11,7 +11,7 @@ public class Guest : MonoBehaviour
     private PauseMenuController _menuController;
     private EconomyController _priceMenuController;
     private Floor _floorController;
-    private Queue<(ItemHolder, int)> _items;
+    private Queue<(ItemHolder, int, int)> _items;
     private MoveGuest _mover;
     private float _time;
     private bool _waiting;
@@ -66,7 +66,7 @@ public class Guest : MonoBehaviour
         List<(ItemHolder, int)> holdersItems = new List<(ItemHolder, int)>();
         HashSet<ItemHolder> visited = new HashSet<ItemHolder>();
         int lengthWay = UnityEngine.Random.Range(1, 4);
-        _items = new Queue<(ItemHolder, int)>();
+        _items = new Queue<(ItemHolder, int, int)>();
 
         int money = UnityEngine.Random.Range(_minMoneyAmount, _maxMoneyAmount);
 
@@ -74,22 +74,23 @@ public class Guest : MonoBehaviour
         {
 
             (List<Vector3>, ItemHolder) points2 = _floorController.GetWayToRandom(point);
-            ItemHolder item = points2.Item2;
 
-            if (item == null || item.getFreeItems() == 0 || visited.Contains(item) || money < _menuController.GetGlobalMarketPrice(item.GetItemIndificator()))
+            ItemHolder item = points2.Item2;
+            int use = UnityEngine.Random.Range(1, Math.Max(1, Math.Min(money / _menuController.GetCurrentPrice(item.GetItemIndificator()), item.getFreeItems())));
+            int price = use * _menuController.GetCurrentPrice(item.GetItemIndificator());
+            if (item == null || item.getFreeItems() == 0 || visited.Contains(item) || money < price)
             {
                 continue;
             }
-            int use = UnityEngine.Random.Range(1, Math.Max(1, Math.Min(money / _menuController.GetCurrentPrice(item.GetItemIndificator()), item.getFreeItems())));
 
-            money -= use * _menuController.GetGlobalMarketPrice(item.GetItemIndificator());
+            money -= use * _menuController.GetCurrentPrice(item.GetItemIndificator());
 
             visited.Add(item);
             points.AddRange(points2.Item1);
             point = points[points.Count - 1];
             itemHolders.Enqueue(points.Count - 1);
             
-            _items.Enqueue((item, use));
+            _items.Enqueue((item, use, price));
             holdersItems.Add((item, item.getFreeItems() - use));
         }
 
@@ -149,8 +150,8 @@ public class Guest : MonoBehaviour
 
     public void ReleaseNextItem()
     {
-        (ItemHolder, int) k = _items.Dequeue();
-        _moneyForShopping += _menuController.GetGlobalMarketPrice(k.Item1.GetItemIndificator()) * k.Item2;
+        (ItemHolder, int, int) k = _items.Dequeue();
+        _moneyForShopping +=k.Item3;
         for (int i = 0; i < k.Item2; i++)
         {
             k.Item1.DestroyLastItem();
