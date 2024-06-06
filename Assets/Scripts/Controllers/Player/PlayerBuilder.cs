@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 using static BuildingsConsts;
 using static ItemsConsts;
 
@@ -10,7 +11,6 @@ public class PlayerBuilder : MonoBehaviour
     [SerializeField] private LayerMask _groundMask;
 
     [SerializeField] private BuildingsFactory _buildingsFactory;
-
     [SerializeField] private float _raycastField;
     [SerializeField] private float _rotationSpeed;
 
@@ -20,7 +20,7 @@ public class PlayerBuilder : MonoBehaviour
 
     private Building _building;
     private bool _isBuilding;
-
+    private float _wheel;
     private BuildingIndificator _buildingIndificator;
 
     private static event Action<BuildingIndificator> onBuildingIdChange;
@@ -51,11 +51,10 @@ public class PlayerBuilder : MonoBehaviour
 
     private void Start()
     {
+        _wheel = 0;
         _floorController = FindObjectOfType<Floor>();
         _storageController = FindObjectOfType<OrdersController>();
     }
-
-
     void Update()
     {
         RaycastHit hit;
@@ -68,9 +67,17 @@ public class PlayerBuilder : MonoBehaviour
         {
             buildingGO.transform.position = new Vector3(hit.point.x, hit.point.y + _building._size.y/2, hit.point.z);
         }
+
         //Change
-        if(_isBuilding && Input.GetKeyDown(KeyCode.RightBracket))
+        _wheel = _wheel + Input.GetAxis("Mouse ScrollWheel");
+        if (_wheel * _wheel > 0.001f)
         {
+            Debug.Log("NOT ZERO: " + _wheel);
+        }
+        
+        if (_isBuilding && _wheel < -1f)
+        {
+            _wheel = 0;
             Debug.Log("RIGHT BRACKET");
 
             Destroy(buildingGO);
@@ -100,8 +107,9 @@ public class PlayerBuilder : MonoBehaviour
             }
 
             buildingGO = Instantiate(_building._gameBody);
-        } else if (_isBuilding && Input.GetKeyDown(KeyCode.LeftBracket))
+        } else if (_isBuilding && _wheel > 1f)
         {
+            _wheel = 0;
             Debug.Log("LEFT BRACKET");
 
             Destroy(buildingGO);
@@ -150,7 +158,6 @@ public class PlayerBuilder : MonoBehaviour
         }
 
         //Open\Close\Create\Destroy
-
         if (Input.GetKeyDown(KeyCode.Z) && Physics.Raycast(_face.position, fwd, out hit, _raycastField) && (hit.transform.CompareTag("Building") || hit.transform.CompareTag("Storage"))) {
 
             BuildingContoller buildingContollerDelete = hit.transform.GetComponent<BuildingContoller>();
@@ -163,8 +170,7 @@ public class PlayerBuilder : MonoBehaviour
             }
             Destroy(hit.transform.gameObject);
         }
-        else if (_building == null && Input.GetKeyDown(KeyCode.Q) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask) && Cursor.lockState == CursorLockMode.Locked) {
-            onBuildingRequest?.Invoke(true);
+        else if (_building == null && Input.GetKeyDown(KeyCode.B) && !_isBuilding && Physics.Raycast(_face.position, fwd, out hit, _raycastField, _groundMask)) {
             _floorController.CreateBuildingMap();
             _building = _buildingsFactory.Get(BuildingIndificator.Desk1);
             onBuildingIdChange?.Invoke(_buildingIndificator);
@@ -172,10 +178,11 @@ public class PlayerBuilder : MonoBehaviour
 
             _buildingIndificator = BuildingIndificator.Desk1;
             _isBuilding = true;
+
+            onBuildingRequest?.Invoke(true);
         }
         else if (_isBuilding && Input.GetKeyDown(KeyCode.Q)
             && _floorController.IsItPossibleToBuild(buildingContoller)){
-            onBuildingRequest?.Invoke(false);
             buildingGO.GetComponentInChildren<BoxCollider>().isTrigger = false;
             _floorController.TryToBuild(buildingContoller);
             _floorController.DestroyBuildingMap();
@@ -196,7 +203,10 @@ public class PlayerBuilder : MonoBehaviour
 
             _building = null;
             _isBuilding = false;
-        } else if (_isBuilding && Input.GetKeyDown(KeyCode.Escape)) {
+            onBuildingRequest?.Invoke(false);
+
+        }
+        else if (_isBuilding && Input.GetKeyDown(KeyCode.Escape)) {
             _floorController.DestroyBuildingMap();
 
             _isBuilding = false;

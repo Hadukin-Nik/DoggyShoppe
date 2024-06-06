@@ -242,9 +242,14 @@ public class PauseMenuController : MonoBehaviour
         mixer.SetFloat("Volume", v);
     }
 
-    public int GetPrice(ItemIndificator item)
+    public int GetGlobalMarketPrice(ItemIndificator item)
     {
         return marketModel.PriceMap[item];
+    }
+
+    public int GetCurrentPrice(ItemIndificator item)
+    {
+        return shopModel.PriceMap[item];
     }
 
     public void UpdateMarketMenu()
@@ -295,6 +300,6 @@ public class PauseMenuController : MonoBehaviour
 
     public void DeleteMoneyAction(ItemIndificator itemIndificator, int count)
     {
-        economyController.RemoveMoney(count * GetPrice(itemIndificator));
+        economyController.RemoveMoney(count * GetGlobalMarketPrice(itemIndificator));
     }
 }

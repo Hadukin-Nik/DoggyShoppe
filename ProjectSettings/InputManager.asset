@@ -143,8 +143,8 @@ InputManager:
     altPositiveButton: 
     gravity: 0
     dead: 0
-    sensitivity: 0.1
-    snap: 0
+    sensitivity: 1.1
+    snap: 1
     invert: 0
     type: 1
     axis: 2
@@ -297,10 +297,10 @@ InputManager:
     m_Name: BuildingsRotate
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: t
-    positiveButton: r
+    negativeButton: r
+    positiveButton: t
     altNegativeButton: 
-    altPositiveButton: 
+    altPositiveButton: joystick button 1
     gravity: 3
     dead: 0.001
     sensitivity: 3

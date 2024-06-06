@@ -76,13 +76,13 @@ public class Guest : MonoBehaviour
             (List<Vector3>, ItemHolder) points2 = _floorController.GetWayToRandom(point);
             ItemHolder item = points2.Item2;
 
-            if (item == null || item.getFreeItems() == 0 || visited.Contains(item) || money < _menuController.GetPrice(item.GetItemIndificator()))
+            if (item == null || item.getFreeItems() == 0 || visited.Contains(item) || money < _menuController.GetGlobalMarketPrice(item.GetItemIndificator()))
             {
                 continue;
             }
-            int use = UnityEngine.Random.Range(1, Math.Max(1, Math.Min(money / _menuController.GetPrice(item.GetItemIndificator()), item.getFreeItems())));
+            int use = UnityEngine.Random.Range(1, Math.Max(1, Math.Min(money / _menuController.GetCurrentPrice(item.GetItemIndificator()), item.getFreeItems())));
 
-            money -= use * _menuController.GetPrice(item.GetItemIndificator());
+            money -= use * _menuController.GetGlobalMarketPrice(item.GetItemIndificator());
 
             visited.Add(item);
             points.AddRange(points2.Item1);
@@ -150,7 +150,7 @@ public class Guest : MonoBehaviour
     public void ReleaseNextItem()
     {
         (ItemHolder, int) k = _items.Dequeue();
-        _moneyForShopping += _menuController.GetPrice(k.Item1.GetItemIndificator()) * k.Item2;
+        _moneyForShopping += _menuController.GetGlobalMarketPrice(k.Item1.GetItemIndificator()) * k.Item2;
         for (int i = 0; i < k.Item2; i++)
         {
             k.Item1.DestroyLastItem();
