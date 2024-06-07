@@ -1577,15 +1577,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   buildings:
-  - _gameBody: {fileID: 8535899298435504759, guid: 8d98e4aab85f42644bfb42591b3e183b, type: 3}
+  - _gameBody: {fileID: 9066724322352739528, guid: 2324eb51e893b834b854680f12de4e5f, type: 3}
     _size: {x: 1, y: 0, z: 1}
     _name: Desk1
     _buildingIndificator: 0
-  - _gameBody: {fileID: 4390987842710089789, guid: f2f374f7c8e115848a631a70f42e726f, type: 3}
+  - _gameBody: {fileID: 5599659707106882706, guid: ee4ba53f5205e974d8c129c833f2563f, type: 3}
     _size: {x: 1, y: 0, z: 2}
     _name: Desk2
     _buildingIndificator: 1
-  - _gameBody: {fileID: 895979341101850702, guid: a9a2338be750c6d46a6ec0742496f00f, type: 3}
+  - _gameBody: {fileID: 5738383087556913056, guid: 6843fd0d6c2da5946b034e515f585afe, type: 3}
     _size: {x: 1, y: 0, z: 3}
     _name: Desk3
     _buildingIndificator: 2
