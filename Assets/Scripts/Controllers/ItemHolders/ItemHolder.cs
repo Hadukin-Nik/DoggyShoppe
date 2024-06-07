@@ -33,7 +33,8 @@ public class ItemHolder : MonoBehaviour
         GameObject mainPoint = GameObject.FindWithTag(_mainPointTag);
         _factory = mainPoint.GetComponent<ItemFactory>();
         _itemStack = new Stack<GameObject>();
-
+        GetComponent<BoxCollider>().enabled = true;
+        GetComponent<BoxCollider>().isTrigger = false;
         setPlaceEmpty();
     }
 

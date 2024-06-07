@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
@@ -39,5 +40,10 @@ public class ItemFactory : MonoBehaviour
             }
         }
         return -1;
+    }
+
+    public Material GetMaterial(ItemsConsts.ItemIndificator itemIndificator)
+    {
+        return Get(itemIndificator)._boxMaterial;
     }
 }

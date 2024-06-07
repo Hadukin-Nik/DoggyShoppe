@@ -70,6 +70,7 @@ public class ListItemInspector : Editor
             SerializedProperty MyName = MyListRef.FindPropertyRelative("_name");
             SerializedProperty MySize = MyListRef.FindPropertyRelative("_size");
 
+            SerializedProperty MyMaterial = MyListRef.FindPropertyRelative("_boxMaterial");
 
             // Display the property fields in two ways.
 
@@ -78,6 +79,7 @@ public class ListItemInspector : Editor
             EditorGUILayout.PropertyField(MyGameObject);
             EditorGUILayout.PropertyField(MyName);
             EditorGUILayout.PropertyField(MySize);
+            EditorGUILayout.PropertyField(MyMaterial);
 
 
             // Array fields with remove at index

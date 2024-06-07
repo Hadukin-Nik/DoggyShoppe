@@ -8,11 +8,14 @@ public class OrdersController : MonoBehaviour
 
     private HashSetNListStructure<BoxStorage> _boxStorages;
     private PauseMenuController _menuController;
+
+    private ItemFactory _itemFactory;
     void Start()
     {
         _menuController = FindAnyObjectByType<PauseMenuController>();
         _boxStorages = new HashSetNListStructure<BoxStorage>();
         _menuController.AddActionOnOrderEvent(TryAddNewOrder);
+        _itemFactory = FindAnyObjectByType<ItemFactory>();
     }
 
     void Update()
@@ -34,6 +37,9 @@ public class OrdersController : MonoBehaviour
                 (Vector3, Quaternion, (int, int)) newObject = boxStorages[i].Place();
 
                 GameObject gameObject1 = Instantiate(_boxPrefab, newObject.Item1, newObject.Item2);
+
+                gameObject1.GetComponent<Renderer>().material = _itemFactory.GetMaterial(itemIndificator);
+
                 ItemBox itemBox = gameObject1.GetComponent<ItemBox>();
 
                 gameObject1.transform.GetComponent<BoxCollider>().enabled = true;
